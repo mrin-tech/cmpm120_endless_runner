@@ -5,7 +5,8 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.moveSpeed = 3;
-
+        this.jumps = 0;
+        this.Jumping = false;
     }
 
     create() {
@@ -26,10 +27,15 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         // sliding
         
         // jumping
-        if (keyW.isDown) {
-            this.setVelocityY(-200);
+        this.onGround = this.body.touching.down;        //checks if player is standing on solid ground
+        if (this.onGround) {            //reset the jump counter when on the ground
+            this.jumps = 0;
         }
 
-        // double jump
+        if (Phaser.Input.Keyboard.JustDown(keyW) && (this.onGround || this.jumps < 2)) {        //checks if the runner can jump
+            this.setVelocityY(-200);        // the jump
+            this.jumps += 1;
+        }
+        
     }
 }
