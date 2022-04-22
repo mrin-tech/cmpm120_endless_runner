@@ -11,6 +11,10 @@ class Play extends Phaser.Scene {
             frameWidth: 32,
             frameHeight: 32
         });
+        this.load.image('block1', './assets/Level-Design/Platform-Block (1).png');
+        this.load.image('block2', './assets/Level-Design/Platform-Block (2).png');
+        this.load.image('block3', './assets/Level-Design/Platform-Block (3).png');
+        this.load.image('block4', './assets/Level-Design/Platform-Block (4).png');
         this.load.spritesheet('jumping', 'assets/Player-Sprites/Player1-Jump(R)-Sheet.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -66,7 +70,29 @@ class Play extends Phaser.Scene {
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
+        // platform
+        this.createPlatform(400, 500);
+        this.createPlatform(630, 500);
+
+        // camera
+        this.cameras.main.setSize(960, 610);
+        this.cameras.main.startFollow(this.runner);
+
     }
+
+    // generate platforms through random blocks
+    createPlatform(xVal, yVal) {
+        this.grd = this.physics.add.group({
+            key: Phaser.Math.RND.pick(['block1', 'block2', 'block3', 'block4']),
+            repeat: 11,
+            setXY: { x: xVal, y: yVal, stepX: 16 },
+            immovable: true,
+            allowGravity: false,
+        });
+        this.physics.add.collider(this.runner, this.grd);
+    }
+
 
     update() {
         this.runner.update();
