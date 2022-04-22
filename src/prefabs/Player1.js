@@ -91,7 +91,7 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyW) && (this.onGround || this.jumps < 2)) {        //checks if the runner can jump
-            this.setVelocityY(-200);        // the jump
+            this.setVelocityY(-350);        // the jump
             this.jumps += 1;
             this.Jumping = true;
         }
