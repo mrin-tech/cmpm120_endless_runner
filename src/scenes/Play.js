@@ -6,6 +6,7 @@ class Play extends Phaser.Scene {
         // temporary images for sprite
         this.load.image('temp', './assets/temp32.png');
         this.load.image('ground', './assets/temp_ground.png');
+        this.load.image('platform0', './assets/platform0.png');
         this.load.spritesheet('runner', 'assets/Player-Sprites/idle-run-temp.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -53,9 +54,9 @@ class Play extends Phaser.Scene {
         // temporary sprites //
         //this.runner1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'runner').setScale(4).setOrigin(0.5, 1);
 
-        this.runner = new Player1(this, game.config.width/3, game.config.height - 2 *borderUISize - borderPadding, 'temp').setScale(4).setOrigin(0.5, 0.5);
+        this.runner = new Player1(this, game.config.width/3, 500, 'temp').setScale(4).setOrigin(0.5, 1);
         this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400, 630, 'ground').setScale(2).refreshBody();
+        this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
         this.physics.add.collider(this.runner, this.platforms);
         // //
 
