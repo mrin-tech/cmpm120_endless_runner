@@ -10,6 +10,10 @@ class Play extends Phaser.Scene {
             frameWidth: 32,
             frameHeight: 32
         });
+        this.load.spritesheet('jumping', 'assets/Player-Sprites/Player1-Jump(R)-Sheet.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
     }
 
     create() {
@@ -31,6 +35,16 @@ class Play extends Phaser.Scene {
             frames: this.anims.generateFrameNames('runner', {
                 start: 10,
                 end: 17
+            }),
+            frameRate: 12,
+            repeat: -1
+        });
+
+        const runnerJump = this.anims.create({
+            key: 'jump',
+            frames: this.anims.generateFrameNames('jumping', {
+                start: 5,
+                end: 12
             }),
             frameRate: 12,
             repeat: -1
