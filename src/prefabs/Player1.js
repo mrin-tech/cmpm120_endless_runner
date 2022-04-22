@@ -42,22 +42,27 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         }
 
         //changing look direction
-        if (Phaser.Input.Keyboard.JustDown(keyA)) {
+        if (keyA.isDown) {
             this.flipX = true;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyD)) {
+        if (keyD.isDown) {
             this.flipX = false;
         }
 
         // running
-        if(keyA.isDown && this.x >= borderUISize + this.width) {
-            this.x -= this.moveSpeed;
-            this.Running = true;
-            this.idleLooping = false;
-        } else if (keyD.isDown && this.x <= game.config.width - borderUISize - this.width) {
-            this.x += this.moveSpeed;
-            this.Running = true;
-            this.idleLooping = false;
+        if(keyA.isDown || keyD.isDown) {
+            if(keyA.isDown && this.x >= borderUISize + this.width) {
+                this.x -= this.moveSpeed;
+                this.flipX = true;
+                this.Running = true;
+                this.idleLooping = false;
+            }
+            if (keyD.isDown && this.x <= game.config.width - borderUISize - this.width) {
+                this.x += this.moveSpeed;
+                this.flipX = false;
+                this.Running = true;
+                this.idleLooping = false;
+            }
         }
         else {
             this.Running = false;
