@@ -6,6 +6,7 @@ class Play extends Phaser.Scene {
         // temporary images for sprite
         this.load.image('temp', './assets/temp.png');
         this.load.image('ground', './assets/temp_ground.png');
+        this.load.spritesheet('runner', 'assets/Player-Sprites/idle-run-temp.png');
     }
 
     create() {
