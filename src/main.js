@@ -9,14 +9,14 @@ let config = {
             debug: true
         }
     },
-    scene: [ Play ]
+    scene: [ Menu, Play]
 }
 
 
 let game = new Phaser.Game(config);
 
 // reserving keyboard variables
-let keyW, keyA, keyS, keyD, keySPACE;
+let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT;
 
 let borderUISize = 40;
 let borderPadding = borderUISize / 3;
