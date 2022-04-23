@@ -54,14 +54,26 @@ class Play extends Phaser.Scene {
             frameRate: 12,
             repeat: -1
         });
+        // creating moving container
+        this.movingContainer = this.add.container();
 
         // temporary sprites //
         //this.runner1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'runner').setScale(4).setOrigin(0.5, 1);
-
+            //runner
         this.runner = new Player1(this, game.config.width/3, 500, 'temp').setScale(4).setOrigin(0.5, 1);
-        this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
+
+        // creating platform group
+        this.platforms = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.physics.add.collider(this.runner, this.platforms);
+
+
+            //spawning platforms
+        const platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
+        this.movingContainer.add([platform0]);
+
+        console.log('yo');
+        
+        
         // //
 
 
@@ -96,7 +108,18 @@ class Play extends Phaser.Scene {
 
     update() {
         this.runner.update();
-            //////
         
+
+        //moving the world around player
+        if(keyA.isDown || keyD.isDown) {
+            if(keyA.isDown && this.runner.x) {
+                this.movingContainer.x += game.settings.worldSpeed;
+                console.log('left');
+            }
+            if (keyD.isDown && this.runner.x) {
+                this.movingContainer.x -= game.settings.worldSpeed;
+                console.log('right');
+            }
+        }
     }
 }

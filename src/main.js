@@ -5,7 +5,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 200 },
+            gravity: { y: 3000 },
             debug: true
         }
     },
@@ -14,6 +14,9 @@ let config = {
 
 
 let game = new Phaser.Game(config);
+game.settings = {
+    worldSpeed: 8
+};
 
 // reserving keyboard variables
 let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT;
