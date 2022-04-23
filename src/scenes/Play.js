@@ -83,25 +83,52 @@ class Play extends Phaser.Scene {
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
-        // platform
-        this.createPlatform(400, 500);
-        this.createPlatform(630, 500);
+        // // platform
+        //this.createPlatform(400, 500);
+        // this.createPlatform(630, 500);
 
         // camera
         this.cameras.main.setSize(960, 610);
         this.cameras.main.startFollow(this.runner);
 
+        // ahhhhhhh //
+
+        this.p = new Platform(this, Phaser.Math.Between(430,1000),Phaser.Math.Between(500,800), 'platform0', 0).setOrigin(0,0);
+        this.physics.add.collider(this.runner, this.p);
+
+        platformGroup = this.physics.add.group();
+        platformGroup.defaults = {};
+        platformGroup.runChildUpdate = true;
+        this.physics.add.collider(this.runner, this.platformGroup);
+        let spawn = this.time.addEvent({ delay: 1000, callback: () =>{
+            this.platformSpawn();
+        },  loop: true });
+
+        
+       
+
+    }
+
+    update() {
+        this.runner.update();
+        this.p.update();
+        
     }
 
     // generate platforms through random blocks
     createPlatform(xVal, yVal) {
+        // randomizes blocks to create a platform
         this.grd = this.physics.add.group({
-            key: Phaser.Math.RND.pick(['block1', 'block2', 'block3', 'block4']),
-            repeat: 11,
+            key: 'block1',
+            repeat: Phaser.Math.Between(2, 10),
             setXY: { x: xVal, y: yVal, stepX: 16 },
             immovable: true,
             allowGravity: false,
+            // velocityX: -200
+
         });
+        // this.grd.setVelocityX(-200);
+        // this.runner.setVelocityX(200);
         this.physics.add.collider(this.runner, this.grd);
     }
 
@@ -121,5 +148,11 @@ class Play extends Phaser.Scene {
                 console.log('right');
             }
         }
+    }
+    platformSpawn(){
+        // platformGroup.add(this.createPlatform(Phaser.Math.Between(430,1000),Phaser.Math.Between(430,600)));
+        this.newPlatform = new Platform(this, Phaser.Math.Between(430,1000),Phaser.Math.Between(450,600),  'platform0', 0).setOrigin(0,0);
+        this.physics.add.collider(this.runner, this.newPlatform);
+        platformGroup.add(this.newPlatform);
     }
 }
