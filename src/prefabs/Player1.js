@@ -26,7 +26,7 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         
     }
 
-    update() {
+    update() {        
         // add player core mechanics
         this.onGround = this.body.touching.down;        //checks if player is standing on solid ground
 

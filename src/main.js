@@ -9,7 +9,7 @@ let config = {
             debug: true
         }
     },
-    scene: [ Menu, Play]
+    scene: [Menu, Play, GameOver]
 }
 
 
@@ -19,7 +19,7 @@ game.settings = {
 };
 
 // reserving keyboard variables
-let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT;
+let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT, keyLEFT;
 
 let borderUISize = 40;
 let borderPadding = borderUISize / 3;

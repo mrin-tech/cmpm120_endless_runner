@@ -101,14 +101,21 @@ class Play extends Phaser.Scene {
             this.platformSpawn();
         },  loop: true });
 
-        
-       
-
+        this.gameOver = false;
     }
 
     update() {
-        this.runner.update();
-        // this.p.update();
+        // this.p.update(); 
+        console.log('y', this.runner.y);
+        if (this.runner.y > 800) {
+            console.log('abc');
+            this.gameOver = true;
+            this.scene.start('gameOverScene'); 
+        }
+
+        if (this.gameOver == false) {
+            this.runner.update();
+        }
 
         console.log('runner x position: ' + this.runner.x);
 
