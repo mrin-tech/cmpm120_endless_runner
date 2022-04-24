@@ -93,12 +93,12 @@ class Play extends Phaser.Scene {
 
         // this.p = new Platform(this, Phaser.Math.Between(430,1000),Phaser.Math.Between(450,600),  'platform0', 0).setOrigin(0,0).setScale(2);
         // this.physics.add.collider(this.runner, this.p);
-
+        this.counter = 500;
         this.platformGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.platformGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.platformGroup);
-        let spawn = this.time.addEvent({ delay: 1000, callback: () =>{
-            this.platformSpawn();
+        let generate = this.time.addEvent({ delay: 50, callback: () =>{
+            this.platformGenerate();
         },  loop: true });
 
         this.gameOver = false;
@@ -117,6 +117,7 @@ class Play extends Phaser.Scene {
             this.runner.update();
         }
 
+        console.log('runner x position: ' + this.runner.x);
         console.log('runner x position: ' + this.runner.x);
 
         //moving the world around player
@@ -155,9 +156,9 @@ class Play extends Phaser.Scene {
     }
 
 
-    platformSpawn(){
+    platformGenerate(){
         // platformGroup.add(this.createPlatform(Phaser.Math.Between(430,1000),Phaser.Math.Between(430,600)));
-        this.newPlatform = new Platform(this, Phaser.Math.Between(430,1000) + this.runner.x, Phaser.Math.Between(450,600),  'platform0', 0).setOrigin(0,0).setScale(2);
+        this.newPlatform = new Platform(this, this.counter + this.runner.x, Phaser.Math.Between(400,600),  'platform0', 0).setOrigin(0,0).setScale(2);
         console.log(this.newPlatform.x);
         this.physics.add.collider(this.runner, this.newPlatform);
         this.platformGroup.add(this.newPlatform);
@@ -165,5 +166,9 @@ class Play extends Phaser.Scene {
         // this.platforms.add(this.newPlatform);
 
         this.movingContainer.add(this.newPlatform);
+
+        // these values can be changed to space out the platforms more to make the game more difficult
+        // higher numbers = farther the platforms are spaced out
+        this.counter += Phaser.Math.Between(275,600);
     }
 }
