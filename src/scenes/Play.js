@@ -70,8 +70,6 @@ class Play extends Phaser.Scene {
             //spawning platforms
         const platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
         this.movingContainer.add([platform0]);
-
-        console.log('yo');
         
         
         // //
@@ -88,17 +86,16 @@ class Play extends Phaser.Scene {
         // this.createPlatform(630, 500);
 
         // camera
-        this.cameras.main.setSize(960, 610);
-        this.cameras.main.startFollow(this.runner);
+        // this.cameras.main.setSize(960, 610);
+        // this.cameras.main.startFollow(this.runner);
 
         // ahhhhhhh //
 
-        this.p = new Platform(this, Phaser.Math.Between(430,1000),Phaser.Math.Between(500,800), 'platform0', 0).setOrigin(0,0);
-        this.physics.add.collider(this.runner, this.p);
+        // this.p = new Platform(this, Phaser.Math.Between(430,1000),Phaser.Math.Between(450,600),  'platform0', 0).setOrigin(0,0).setScale(2);
+        // this.physics.add.collider(this.runner, this.p);
 
-        platformGroup = this.physics.add.group();
-        platformGroup.defaults = {};
-        platformGroup.runChildUpdate = true;
+        this.platformGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
+        this.platformGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.platformGroup);
         let spawn = this.time.addEvent({ delay: 1000, callback: () =>{
             this.platformSpawn();
@@ -111,7 +108,25 @@ class Play extends Phaser.Scene {
 
     update() {
         this.runner.update();
-        this.p.update();
+        // this.p.update();
+
+        console.log('runner x position: ' + this.runner.x);
+
+        //moving the world around player
+        if(keyA.isDown || keyD.isDown) {
+            if(keyA.isDown && this.runner.x) {
+                this.movingContainer.x += game.settings.worldSpeed;
+                console.log('left');
+            }
+            if (keyD.isDown && this.runner.x) {
+                this.movingContainer.x -= game.settings.worldSpeed;
+                console.log('right');
+            }
+        }
+
+        if(keyS.isDown) {
+            this.movingContainer.add(this.newPlatform);
+        }
         
     }
 
@@ -133,26 +148,15 @@ class Play extends Phaser.Scene {
     }
 
 
-    update() {
-        this.runner.update();
-        
-
-        //moving the world around player
-        if(keyA.isDown || keyD.isDown) {
-            if(keyA.isDown && this.runner.x) {
-                this.movingContainer.x += game.settings.worldSpeed;
-                console.log('left');
-            }
-            if (keyD.isDown && this.runner.x) {
-                this.movingContainer.x -= game.settings.worldSpeed;
-                console.log('right');
-            }
-        }
-    }
     platformSpawn(){
         // platformGroup.add(this.createPlatform(Phaser.Math.Between(430,1000),Phaser.Math.Between(430,600)));
-        this.newPlatform = new Platform(this, Phaser.Math.Between(430,1000),Phaser.Math.Between(450,600),  'platform0', 0).setOrigin(0,0);
+        this.newPlatform = new Platform(this, Phaser.Math.Between(430,1000) + this.runner.x, Phaser.Math.Between(450,600),  'platform0', 0).setOrigin(0,0).setScale(2);
+        console.log(this.newPlatform.x);
         this.physics.add.collider(this.runner, this.newPlatform);
-        platformGroup.add(this.newPlatform);
+        this.platformGroup.add(this.newPlatform);
+
+        // this.platforms.add(this.newPlatform);
+
+        this.movingContainer.add(this.newPlatform);
     }
 }

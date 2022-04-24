@@ -29,12 +29,14 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
     update() {
         // add player core mechanics
         this.onGround = this.body.touching.down;        //checks if player is standing on solid ground
-        console.log('onGround' + this.onGround);
-        console.log(this.Running);
-        console.log('jumping ' + this.Jumping);
-        console.log('idleloop' + this.idleLooping);
-        console.log('runloop' + this.runLooping);
-        //standing
+
+        // console.log('onGround' + this.onGround);
+        // console.log(this.Running);
+        // console.log('jumping ' + this.Jumping);
+        // console.log('idleloop' + this.idleLooping);
+        // console.log('runloop' + this.runLooping);
+        // //standing
+
         //checking when to end jumping anim
         if (this.onGround == true) {
             this.Jumping = false;
@@ -44,13 +46,13 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         // checking when to play idle anim
         if (this.onGround && this.Running == false && this.idleLooping == false && this.jumpLooping == false) {
             this.play({ key: 'idle' });
-            console.log('idle');
+            // console.log('idle');
             this.idleLooping = true;
         }
         // checking when to play running anim
         if (this.Running && this.onGround && this.runLooping == false) {
             this.play({ key: 'run' });
-            console.log('run');
+            // console.log('run');
             this.runLooping = true;
         }
         //checking when to play jumping anim

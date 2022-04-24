@@ -24,7 +24,7 @@ class Platform extends Phaser.GameObjects.Sprite {
 
 
     update() {
-        this.x -= this.platformSpeed;
+        //this.x -= this.platformSpeed;
         
 
     }
