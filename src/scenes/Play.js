@@ -35,7 +35,7 @@ class Play extends Phaser.Scene {
         canvas.style.cursor = 'none';
 
         // remove context menu on right click
-        this.input.mouse.disableContextMenu();
+        // this.input.mouse.disableContextMenu();
 
         this.plats = 0;     // number of platforms generated
 
@@ -142,6 +142,8 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        this.cursor.setDepth(0.5);
+        console.log(this.cursor.depth);
         // updating mouse cursor sprite position
         this.cursor.x = game.input.mousePointer.x;
         this.cursor.y = game.input.mousePointer.y;
@@ -206,13 +208,14 @@ class Play extends Phaser.Scene {
     }
 
 
-    platformGenerate(){
+    platformGenerate() {
         // platformGroup.add(this.createPlatform(Phaser.Math.Between(430,1000),Phaser.Math.Between(430,600)));
         this.newPlatform = new Platform(this, this.counter + this.runner.x, Phaser.Math.Between(400,600),  'platform0', 0).setOrigin(0,0).setScale(2);
         this.plats += 1;
         console.log(this.newPlatform.x);
         this.physics.add.collider(this.runner, this.newPlatform);
         this.platformGroup.add(this.newPlatform);
+        
 
         // this.platforms.add(this.newPlatform);
 
