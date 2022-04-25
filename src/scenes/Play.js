@@ -33,7 +33,7 @@ class Play extends Phaser.Scene {
         // hiding mouse
         let canvas = this.sys.canvas;
         canvas.style.cursor = 'none';
-        
+
         // remove context menu on right click
         this.input.mouse.disableContextMenu();
 
@@ -91,8 +91,6 @@ class Play extends Phaser.Scene {
         //this.movingContainer.add([platform0]);
         
         
-        // adding cursor sprite
-        this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
 
 
         // player 1 keys
@@ -108,10 +106,7 @@ class Play extends Phaser.Scene {
             {
                 if (pointer.getDuration() > 500)
                 {
-                    this.add.image(pointer.x, pointer.y, 'disk');
-                }
-                else {
-
+                    this.add.sprite(pointer.x, pointer.y, 'bearTrap');
                 }
             }
         }, this);
@@ -141,6 +136,9 @@ class Play extends Phaser.Scene {
 
 
         this.gameOver = false;
+
+        // adding cursor sprite
+        this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
     }
 
     update() {
