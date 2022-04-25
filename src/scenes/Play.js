@@ -81,7 +81,7 @@ class Play extends Phaser.Scene {
         
         
         // adding cursor sprite
-        this.cursor = this.add.sprite(-100, -100, 'cursor');
+        this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
 
 
         // player 1 keys
