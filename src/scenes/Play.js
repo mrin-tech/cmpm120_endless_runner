@@ -18,7 +18,7 @@ class Play extends Phaser.Scene {
         this.load.image('block2', './assets/Level-Design/Platform-Block (2).png');
         this.load.image('block3', './assets/Level-Design/Platform-Block (3).png');
         this.load.image('block4', './assets/Level-Design/Platform-Block (4).png');
-        this.load.spritesheet('jumping', 'assets/Player-Sprites/Player1-Jump(R)-Sheet.png', {
+        this.load.spritesheet('jumping', 'assets/Player-Sprites/Player1-Jump2(R)-Sheet.png', {
             frameWidth: 32,
             frameHeight: 32
         });
@@ -56,11 +56,11 @@ class Play extends Phaser.Scene {
         const runnerJump = this.anims.create({
             key: 'jump',
             frames: this.anims.generateFrameNames('jumping', {
-                start: 5,
-                end: 12
+                start: 1,
+                end: 7
             }),
             frameRate: 12,
-            repeat: -1
+            //repeat: -1
         });
         // creating moving container
         //this.movingContainer = this.add.container();
