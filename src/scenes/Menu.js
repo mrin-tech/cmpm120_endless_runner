@@ -2,7 +2,9 @@ class Menu extends Phaser.Scene {
     constructor() {
       super("menuScene");
     }
-
+    preload() {
+        this.load.audio('music', './assets/Sound/Gigakoops - Ill Rip Every Tooth Out of That Shark and Make Them Into the Most Beautiful Necklace You Ever Seen.mp3');
+    }
     create() {
         // menu text configuration
         let menuConfig = {
@@ -30,6 +32,7 @@ class Menu extends Phaser.Scene {
     update() {
 
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+          this.sound.play('music');
           this.scene.start('playScene');    
         }
     }

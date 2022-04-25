@@ -93,9 +93,9 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         }
         // Speed Up World if Player is Pushing the Edge
         if (keyD.isDown && this.x >= game.config.width * (3/8)) {
-            game.settings.worldSpeed = 10;
+            game.settings.worldSpeed = 8;
         } else {
-            game.settings.worldSpeed = 7;
+            game.settings.worldSpeed = 5;
         }
 
         // sliding

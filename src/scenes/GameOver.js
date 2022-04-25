@@ -2,7 +2,9 @@ class GameOver extends Phaser.Scene {
     constructor() {
       super("gameOverScene");
     }
-
+    preload() {
+        this.load.audio('music', './assets/Sound/Gigakoops - Ill Rip Every Tooth Out of That Shark and Make Them Into the Most Beautiful Necklace You Ever Seen.mp3');
+    }
     create() {
         // menu text configuration
         let gameOverConfig = {
@@ -27,9 +29,10 @@ class GameOver extends Phaser.Scene {
     }
 
     update() {
-
+        this.game.sound.stopAll();
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-          this.scene.start('playScene');    
+          this.scene.start('playScene');
+          this.sound.play('music');
         }
     }
 }
