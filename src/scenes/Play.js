@@ -9,6 +9,7 @@ class Play extends Phaser.Scene {
         this.load.image('platform0', './assets/platform0.png');
         this.load.image('sky', './assets/sky.png');
         this.load.image('clouds', './assets/clouds.png');
+        this.load.image('cursor', './assets/temp-cursor.png');
         this.load.spritesheet('runner', 'assets/Player-Sprites/idle-run-temp.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -79,7 +80,8 @@ class Play extends Phaser.Scene {
         //this.movingContainer.add([platform0]);
         
         
-        // //
+        // adding cursor sprite
+        this.cursor = this.add.sprite(-100, -100, 'cursor');
 
 
         // player 1 keys
@@ -123,8 +125,10 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        // this.p.update(); 
-        // console.log('y', this.runner.y);
+        // updating mouse cursor sprite position
+        this.cursor.x = game.input.mousePointer.x;
+        this.cursor.y = game.input.mousePointer.y;
+
 
         this.platform0.x -= 7;
         // this.newEnemy.x -= 7;
