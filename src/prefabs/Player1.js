@@ -26,33 +26,42 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         
     }
 
-    update() {
+    update() {        
         // add player core mechanics
         this.onGround = this.body.touching.down;        //checks if player is standing on solid ground
+
         // console.log('onGround' + this.onGround);
         // console.log(this.Running);
         // console.log('jumping ' + this.Jumping);
-        //standing
+        // console.log('idleloop' + this.idleLooping);
+        // console.log('runloop' + this.runLooping);
+        // //standing
+
         //checking when to end jumping anim
         if (this.onGround == true) {
             this.Jumping = false;
             this.jumpLooping = false;
         }
 
-        if (this.Jumping == true && this.jumpLooping == false) {
-            this.play({ key: 'jump' });
-            this.jumpLooping = true;
-        }
         // checking when to play idle anim
-        if (this.onGround && this.Running == false && this.idleLooping == false) {
+        if (this.onGround && this.Running == false && this.idleLooping == false && this.jumpLooping == false) {
+            this.flipX = false;
             this.play({ key: 'idle' });
-            console.log('idle');
+            // console.log('idle');
             this.idleLooping = true;
         }
         // checking when to play running anim
         if (this.Running && this.onGround && this.runLooping == false) {
             this.play({ key: 'run' });
+            // console.log('run');
             this.runLooping = true;
+        }
+        //checking when to play jumping anim
+        if (this.Jumping == true && this.jumpLooping == false) {
+            this.play({ key: 'jump' });
+            this.idleLooping = false;
+            this.runLooping = false;
+            this.jumpLooping = true;
         }
 
         //changing look direction
@@ -65,22 +74,28 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
 
         // running
         if(keyA.isDown || keyD.isDown) {
-            if(keyA.isDown && this.x >= borderUISize + this.width) {
-                this.x -= this.moveSpeed;
+            if(keyA.isDown && this.x >= game.config.width * (0.5/8)) {
                 this.flipX = true;
                 this.Running = true;
                 this.idleLooping = false;
+                this.x -= this.moveSpeed;
             }
-            if (keyD.isDown && this.x <= game.config.width - borderUISize - this.width) {
-                this.x += this.moveSpeed;
+            if (keyD.isDown && this.x <= game.config.width * (3/8)) {
                 this.flipX = false;
                 this.Running = true;
                 this.idleLooping = false;
+                this.x += this.moveSpeed;
             }
         }
         else {
             this.Running = false;
             this.runLooping = false;
+        }
+        // Speed Up World if Player is Pushing the Edge
+        if (keyD.isDown && this.x >= game.config.width * (3/8)) {
+            game.settings.worldSpeed = 10;
+        } else {
+            game.settings.worldSpeed = 7;
         }
 
         // sliding
@@ -91,7 +106,7 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyW) && (this.onGround || this.jumps < 2)) {        //checks if the runner can jump
-            this.setVelocityY(-350);        // the jump
+            this.setVelocityY(-900);        // the jump
             this.jumps += 1;
             this.Jumping = true;
         }

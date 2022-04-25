@@ -5,18 +5,23 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 900 },
+            gravity: { y: 3000 },
             debug: true
         }
     },
-    scene: [ Menu, Play]
+    scene: [Menu, Play, GameOver]
 }
 
 
 let game = new Phaser.Game(config);
+game.settings = {
+    worldSpeed: 8
+};
 
 // reserving keyboard variables
-let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT;
+let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT, keyLEFT;
 
 let borderUISize = 40;
 let borderPadding = borderUISize / 3;
+let platformGroup;
+let enemyGroup;
