@@ -24,3 +24,4 @@ let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT, keyLEFT;
 let borderUISize = 40;
 let borderPadding = borderUISize / 3;
 let platformGroup;
+let enemyGroup;

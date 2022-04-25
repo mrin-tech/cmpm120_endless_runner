@@ -21,6 +21,7 @@ class Play extends Phaser.Scene {
             frameWidth: 32,
             frameHeight: 32
         });
+        this.load.image('enemy_img', './assets/temp2.png');
     }
 
     create() {
@@ -100,12 +101,23 @@ class Play extends Phaser.Scene {
         // this.p = new Platform(this, Phaser.Math.Between(430,1000),Phaser.Math.Between(450,600),  'platform0', 0).setOrigin(0,0).setScale(2);
         // this.physics.add.collider(this.runner, this.p);
         this.counter = 500;
+        this.enemyCounter = 700;
         this.platformGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.platformGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.platformGroup);
         let generate = this.time.addEvent({ delay: 200, callback: () =>{
             this.platformGenerate();
         },  loop: true });
+
+        // generate enemy that is not part of the inventory
+        // this.newEnemy = new Enemy(this, 430, 500,  'enemy_img', 0).setOrigin(0,0).setScale(2);
+        this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
+        this.enemyGroup.runChildUpdate = true;
+        this.physics.add.collider(this.runner, this.enemyGroup);
+        let generateEnemy = this.time.addEvent({ delay: 200, callback: () =>{
+            this.enemyGenerate();
+        },  loop: true });
+
 
         this.gameOver = false;
     }
@@ -115,6 +127,7 @@ class Play extends Phaser.Scene {
         // console.log('y', this.runner.y);
 
         this.platform0.x -= 7;
+        // this.newEnemy.x -= 7;
 
         // Moving Backgrounds
         this.sky.tilePositionX += 0.01;
@@ -147,6 +160,11 @@ class Play extends Phaser.Scene {
         //     }
         // }
         
+    }
+
+    allowGrav(runner, enemy) {
+        if (runner.y == enemy.y) return true;
+        else return false
     }
 
     // generate platforms through random blocks
@@ -182,5 +200,13 @@ class Play extends Phaser.Scene {
         // these values can be changed to space out the platforms more to make the game more difficult
         // higher numbers = farther the platforms are spaced out
         this.counter += Phaser.Math.Between(275,600);
+    }
+
+    enemyGenerate(){
+        this.newEnemy = new Enemy(this, this.enemyCounter + this.runner.x, 10,  'enemy_img', 0).setOrigin(0,0).setScale(2);
+        this.physics.add.collider(this.runner, this.newEnemy);
+        this.enemyGroup.add(this.newEnemy);
+        this.enemyCounter += Phaser.Math.Between(900,2000);
+
     }
 }
