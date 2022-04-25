@@ -4,6 +4,10 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
+        // hiding mouse
+        let canvas = this.sys.canvas;
+        canvas.style.cursor = 'none';
+
         // menu text configuration
         let menuConfig = {
             fontFamily: 'Arial',

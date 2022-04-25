@@ -4,6 +4,10 @@ class GameOver extends Phaser.Scene {
     }
 
     create() {
+        // hiding mouse
+        let canvas = this.sys.canvas;
+        canvas.style.cursor = 'none';
+        
         // menu text configuration
         let gameOverConfig = {
             fontFamily: 'Arial',
