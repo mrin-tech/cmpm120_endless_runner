@@ -74,7 +74,7 @@ class Play extends Phaser.Scene {
 
 
             //spawning platforms
-        const platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
+        this.platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
         //this.movingContainer.add([platform0]);
         
         
@@ -113,6 +113,8 @@ class Play extends Phaser.Scene {
     update() {
         // this.p.update(); 
         // console.log('y', this.runner.y);
+
+        this.platform0.x -= 7;
 
         // Moving Backgrounds
         this.sky.tilePositionX += 0.01;
