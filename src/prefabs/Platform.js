@@ -4,7 +4,7 @@ class Platform extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);   // add to existing scene
         scene.physics.add.existing(this); 
         this.body.allowGravity = false;
-        this.platformSpeed = 3;
+        this.platformSpeed = game.settings.worldSpeed;
 
     }
 
@@ -24,7 +24,8 @@ class Platform extends Phaser.GameObjects.Sprite {
 
 
     update() {
-        //this.x -= this.platformSpeed;
+        this.platformSpeed = game.settings.worldSpeed;
+        this.x -= this.platformSpeed;
         
 
     }

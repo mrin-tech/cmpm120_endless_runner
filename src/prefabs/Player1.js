@@ -45,6 +45,7 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
 
         // checking when to play idle anim
         if (this.onGround && this.Running == false && this.idleLooping == false && this.jumpLooping == false) {
+            this.flipX = false;
             this.play({ key: 'idle' });
             // console.log('idle');
             this.idleLooping = true;
@@ -73,20 +74,28 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
 
         // running
         if(keyA.isDown || keyD.isDown) {
-            if(keyA.isDown && this.x >= borderUISize + this.width) {
+            if(keyA.isDown && this.x >= game.config.width * (0.5/8)) {
                 this.flipX = true;
                 this.Running = true;
                 this.idleLooping = false;
+                this.x -= this.moveSpeed;
             }
-            if (keyD.isDown && this.x <= game.config.width - borderUISize - this.width) {
+            if (keyD.isDown && this.x <= game.config.width * (3/8)) {
                 this.flipX = false;
                 this.Running = true;
                 this.idleLooping = false;
+                this.x += this.moveSpeed;
             }
         }
         else {
             this.Running = false;
             this.runLooping = false;
+        }
+        // Speed Up World if Player is Pushing the Edge
+        if (keyD.isDown && this.x >= game.config.width * (3/8)) {
+            game.settings.worldSpeed = 10;
+        } else {
+            game.settings.worldSpeed = 7;
         }
 
         // sliding

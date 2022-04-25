@@ -7,6 +7,8 @@ class Play extends Phaser.Scene {
         this.load.image('temp', './assets/temp32.png');
         this.load.image('ground', './assets/temp_ground.png');
         this.load.image('platform0', './assets/platform0.png');
+        this.load.image('sky', './assets/sky.png');
+        this.load.image('clouds', './assets/clouds.png');
         this.load.spritesheet('runner', 'assets/Player-Sprites/idle-run-temp.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -22,16 +24,20 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        //  this.runner = this.add.rectangle(game.config.width / 2, game.config.height* 3 / 4, 80, 160, 0xFFFFFF);
+        this.plats = 0;     // number of platforms generated
+
+        // ADDING BACKGROUND
+        this.sky = this.add.tileSprite(0,0, game.config.width, game.config.height, 'sky').setOrigin(0,0).setScale(1);
+        this.clouds = this.add.tileSprite(0,0, game.config.width, game.config.height, 'clouds').setOrigin(0,0).setScale(1);
 
         //ANIMATIONS
         const runnerIdle = this.anims.create({
             key: 'idle',
             frames: this.anims.generateFrameNames('runner', {
-                start: 0,
-                end: 1
+                start: 10,
+                end: 17
             }),
-            frameRate: 2,
+            frameRate: 10,
             repeat: -1
         });
 
@@ -41,7 +47,7 @@ class Play extends Phaser.Scene {
                 start: 10,
                 end: 17
             }),
-            frameRate: 12,
+            frameRate: 16,
             repeat: -1
         });
 
@@ -55,7 +61,7 @@ class Play extends Phaser.Scene {
             repeat: -1
         });
         // creating moving container
-        this.movingContainer = this.add.container();
+        //this.movingContainer = this.add.container();
 
         // temporary sprites //
         //this.runner1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'runner').setScale(4).setOrigin(0.5, 1);
@@ -69,7 +75,7 @@ class Play extends Phaser.Scene {
 
             //spawning platforms
         const platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
-        this.movingContainer.add([platform0]);
+        //this.movingContainer.add([platform0]);
         
         
         // //
@@ -97,7 +103,7 @@ class Play extends Phaser.Scene {
         this.platformGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.platformGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.platformGroup);
-        let generate = this.time.addEvent({ delay: 50, callback: () =>{
+        let generate = this.time.addEvent({ delay: 200, callback: () =>{
             this.platformGenerate();
         },  loop: true });
 
@@ -106,7 +112,12 @@ class Play extends Phaser.Scene {
 
     update() {
         // this.p.update(); 
-        console.log('y', this.runner.y);
+        // console.log('y', this.runner.y);
+
+        // Moving Backgrounds
+        this.sky.tilePositionX += 0.01;
+        this.clouds.tilePositionX += 0.5;
+
         if (this.runner.y > 800) {
             console.log('abc');
             this.gameOver = true;
@@ -117,24 +128,22 @@ class Play extends Phaser.Scene {
             this.runner.update();
         }
 
-        console.log('runner x position: ' + this.runner.x);
-        console.log('runner x position: ' + this.runner.x);
+        console.log(game.settings.worldSpeed);
+        console.log('Number of platforms: ' + this.plats);
+
+        // console.log('runner x position: ' + this.runner.x);
 
         //moving the world around player
-        if(keyA.isDown || keyD.isDown) {
-            if(keyA.isDown && this.runner.x) {
-                this.movingContainer.x += game.settings.worldSpeed;
-                console.log('left');
-            }
-            if (keyD.isDown && this.runner.x) {
-                this.movingContainer.x -= game.settings.worldSpeed;
-                console.log('right');
-            }
-        }
-
-        if(keyS.isDown) {
-            this.movingContainer.add(this.newPlatform);
-        }
+        // if(keyA.isDown || keyD.isDown) {
+        //     if(keyA.isDown && this.runner.x) {
+        //         this.movingContainer.x += game.settings.worldSpeed;
+        //         console.log('left');
+        //     }
+        //     if (keyD.isDown && this.runner.x) {
+        //         this.movingContainer.x -= game.settings.worldSpeed;
+        //         console.log('right');
+        //     }
+        // }
         
     }
 
@@ -159,13 +168,14 @@ class Play extends Phaser.Scene {
     platformGenerate(){
         // platformGroup.add(this.createPlatform(Phaser.Math.Between(430,1000),Phaser.Math.Between(430,600)));
         this.newPlatform = new Platform(this, this.counter + this.runner.x, Phaser.Math.Between(400,600),  'platform0', 0).setOrigin(0,0).setScale(2);
+        this.plats += 1;
         console.log(this.newPlatform.x);
         this.physics.add.collider(this.runner, this.newPlatform);
         this.platformGroup.add(this.newPlatform);
 
         // this.platforms.add(this.newPlatform);
 
-        this.movingContainer.add(this.newPlatform);
+        //this.movingContainer.add(this.newPlatform);
 
         // these values can be changed to space out the platforms more to make the game more difficult
         // higher numbers = farther the platforms are spaced out
