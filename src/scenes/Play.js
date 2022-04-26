@@ -38,7 +38,7 @@ class Play extends Phaser.Scene {
         // this.input.mouse.disableContextMenu();
 
         this.plats = 0;     // number of platforms generated
-
+        this.e = 0;
         // ADDING BACKGROUND
         this.sky = this.add.tileSprite(0,0, game.config.width, game.config.height, 'sky').setOrigin(0,0).setScale(1);
         this.clouds = this.add.tileSprite(0,0, game.config.width, game.config.height, 'clouds').setOrigin(0,0).setScale(1);
@@ -126,7 +126,6 @@ class Play extends Phaser.Scene {
         },  loop: true });
 
         // generate enemy that is not part of the inventory
-        // this.newEnemy = new Enemy(this, 430, 500,  'enemy_img', 0).setOrigin(0,0).setScale(2);
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.enemyGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.enemyGroup);
@@ -150,7 +149,17 @@ class Play extends Phaser.Scene {
 
 
         this.platform0.x -= 7;
-        // this.newEnemy.x -= 7;
+
+        // each enemy object //
+        // for (let i = 0; i < this.enemyGroup.getLength(); i++) {
+        //     console.log("enemy", i,  this.enemyGroup.getChildren().find(v => v.name === "num" + i));
+        // }
+
+        // this.enemyGroup.getChildren().forEach(function(enemy) {
+        //     console.log('enemy', enemy.x, enemy.y);
+        //     console.log('runner', this.runner.x, this.runner.y);
+        //     this.allowGravity = true;
+        //   }, this);
 
         // Moving Backgrounds
         this.sky.tilePositionX += 0.01;
@@ -166,8 +175,8 @@ class Play extends Phaser.Scene {
             this.runner.update();
         }
 
-        console.log(game.settings.worldSpeed);
-        console.log('Number of platforms: ' + this.plats);
+        // console.log(game.settings.worldSpeed);
+        // console.log('Number of platforms: ' + this.plats);
 
         // console.log('runner x position: ' + this.runner.x);
 
@@ -228,6 +237,16 @@ class Play extends Phaser.Scene {
 
     enemyGenerate(){
         this.newEnemy = new Enemy(this, this.enemyCounter + this.runner.x, 10,  'enemy_img', 0).setOrigin(0,0).setScale(2);
+
+        this.e+=1;
+        this.newEnemy.name = "num" + this.e;
+        
+        // trying to find absolute position of enemy 
+        // console.log(this.enemyCounter, this.runner.x, this.newEnemy.x, this.newEnemy.y, this.e);
+        this.absVal = this.newEnemy.x-game.settings.worldSpeed - this.enemyCounter;
+        this.newEnemy.absPos = this.absVal;
+        this.newEnemy.allowGravity = true;
+
         this.physics.add.collider(this.runner, this.newEnemy);
         this.enemyGroup.add(this.newEnemy);
         this.enemyCounter += Phaser.Math.Between(900,2000);
