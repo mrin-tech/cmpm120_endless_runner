@@ -125,6 +125,16 @@ class Play extends Phaser.Scene {
             this.platformGenerate();
         },  loop: true });
 
+        // generate collider
+        // this.collideGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
+        // this.collideGroup.runChildUpdate = true;
+        // this.physics.add.collider(this.runner, this.collideGroup);
+        // let generateCollider = this.time.addEvent({ delay: 200, callback: () =>{
+        //     this.colliderGenerate();
+        // },  loop: true });
+
+        // this.physics.add.overlap(this.runner, this.collideGroup, this.fallActivate, null, this);
+
         // generate enemy that is not part of the inventory
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.enemyGroup.runChildUpdate = true;
@@ -133,8 +143,11 @@ class Play extends Phaser.Scene {
             this.enemyGenerate();
         },  loop: true });
 
+        this.physics.add.overlap(this.runner, this.enemyGroup, this.fallActivate, null, this);
+
 
         this.gameOver = false;
+
 
         // adding cursor sprite
         this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
@@ -142,7 +155,7 @@ class Play extends Phaser.Scene {
 
     update() {
         this.cursor.setDepth(0.5);
-        console.log(this.cursor.depth);
+        // console.log(this.cursor.depth);
         // updating mouse cursor sprite position
         this.cursor.x = game.input.mousePointer.x;
         this.cursor.y = game.input.mousePointer.y;
@@ -151,15 +164,15 @@ class Play extends Phaser.Scene {
         this.platform0.x -= 7;
 
         // each enemy object //
-        // for (let i = 0; i < this.enemyGroup.getLength(); i++) {
-        //     console.log("enemy", i,  this.enemyGroup.getChildren().find(v => v.name === "num" + i));
-        // }
+        for (let i = 0; i < this.enemyGroup.getLength(); i++) {
+            console.log("enemy", i,  this.enemyGroup.getChildren().find(v => v.name === "num" + i));
+        }
 
-        // this.enemyGroup.getChildren().forEach(function(enemy) {
-        //     console.log('enemy', enemy.x, enemy.y);
-        //     console.log('runner', this.runner.x, this.runner.y);
-        //     this.allowGravity = true;
-        //   }, this);
+        this.enemyGroup.getChildren().forEach(function(enemy) {
+            console.log('enemy', enemy);
+            console.log('runner', this.runner.x, this.runner.y);
+            this.allowGravity = true;
+          }, this);
 
         // Moving Backgrounds
         this.sky.tilePositionX += 0.01;
@@ -194,6 +207,7 @@ class Play extends Phaser.Scene {
         
     }
 
+
     allowGrav(runner, enemy) {
         if (runner.y == enemy.y) return true;
         else return false
@@ -221,7 +235,7 @@ class Play extends Phaser.Scene {
         // platformGroup.add(this.createPlatform(Phaser.Math.Between(430,1000),Phaser.Math.Between(430,600)));
         this.newPlatform = new Platform(this, this.counter + this.runner.x, Phaser.Math.Between(400,600),  'platform0', 0).setOrigin(0,0).setScale(2);
         this.plats += 1;
-        console.log(this.newPlatform.x);
+        // console.log(this.newPlatform.x);
         this.physics.add.collider(this.runner, this.newPlatform);
         this.platformGroup.add(this.newPlatform);
         
@@ -235,6 +249,17 @@ class Play extends Phaser.Scene {
         this.counter += Phaser.Math.Between(275,600);
     }
 
+    // colliderGenerate(){
+    //     this.newCollider = new Enemy(this, this.enemyCounter + this.runner.x, 10,  'enemy_img', 0).setOrigin(0,0).setScale(2);
+
+    //     this.newCollider.setSize(64, 600);
+        
+    //     this.physics.add.collider(this.runner, this.newCollider);
+    //     this.collideGroup.add(this.newCollider);
+    //     // this.enemyCounter += Phaser.Math.Between(900,2000);
+
+    // }
+
     enemyGenerate(){
         this.newEnemy = new Enemy(this, this.enemyCounter + this.runner.x, 10,  'enemy_img', 0).setOrigin(0,0).setScale(2);
 
@@ -246,10 +271,15 @@ class Play extends Phaser.Scene {
         this.absVal = this.newEnemy.x-game.settings.worldSpeed - this.enemyCounter;
         this.newEnemy.absPos = this.absVal;
         this.newEnemy.allowGravity = true;
+        this.newEnemy.setSize(64, 500);
 
-        this.physics.add.collider(this.runner, this.newEnemy);
+        // this.physics.add.collider(this.runner, this.newEnemy);
         this.enemyGroup.add(this.newEnemy);
         this.enemyCounter += Phaser.Math.Between(900,2000);
 
+    }
+
+    fallActivate(sprite, enemy) {
+        enemy.fall();
     }
 }
