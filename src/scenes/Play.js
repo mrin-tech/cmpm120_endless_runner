@@ -10,6 +10,10 @@ class Play extends Phaser.Scene {
         this.load.image('sky', './assets/sky.png');
         this.load.image('clouds', './assets/clouds.png');
         this.load.image('cursor', './assets/temp-cursor.png');
+        this.load.spritesheet('bearTrap', 'assets/UI/Bear-Trap-Set-Sheet.png', {
+            frameWidth: 16,
+            frameHeight: 16
+        });
         this.load.spritesheet('runner', 'assets/Player-Sprites/idle-run-temp.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -26,6 +30,13 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        // hiding mouse
+        let canvas = this.sys.canvas;
+        canvas.style.cursor = 'none';
+
+        // remove context menu on right click
+        // this.input.mouse.disableContextMenu();
+
         this.plats = 0;     // number of platforms generated
 
         // ADDING BACKGROUND
@@ -80,8 +91,6 @@ class Play extends Phaser.Scene {
         //this.movingContainer.add([platform0]);
         
         
-        // adding cursor sprite
-        this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
 
 
         // player 1 keys
@@ -90,18 +99,23 @@ class Play extends Phaser.Scene {
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
-        // // platform
-        //this.createPlatform(400, 500);
-        // this.createPlatform(630, 500);
+        // MOUSE CONTROLS
+        this.input.on('pointerdown', function (pointer) {
+
+            if (pointer.leftButtonDown())
+            {
+                if (pointer.getDuration() > 500)
+                {
+                    this.add.sprite(pointer.x, pointer.y, 'bearTrap');
+                }
+            }
+        }, this);
+
 
         // camera
         // this.cameras.main.setSize(960, 610);
         // this.cameras.main.startFollow(this.runner);
 
-        // ahhhhhhh //
-
-        // this.p = new Platform(this, Phaser.Math.Between(430,1000),Phaser.Math.Between(450,600),  'platform0', 0).setOrigin(0,0).setScale(2);
-        // this.physics.add.collider(this.runner, this.p);
         this.counter = 500;
         this.enemyCounter = 700;
         this.platformGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
@@ -122,9 +136,14 @@ class Play extends Phaser.Scene {
 
 
         this.gameOver = false;
+
+        // adding cursor sprite
+        this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
     }
 
     update() {
+        this.cursor.setDepth(0.5);
+        console.log(this.cursor.depth);
         // updating mouse cursor sprite position
         this.cursor.x = game.input.mousePointer.x;
         this.cursor.y = game.input.mousePointer.y;
@@ -189,13 +208,14 @@ class Play extends Phaser.Scene {
     }
 
 
-    platformGenerate(){
+    platformGenerate() {
         // platformGroup.add(this.createPlatform(Phaser.Math.Between(430,1000),Phaser.Math.Between(430,600)));
         this.newPlatform = new Platform(this, this.counter + this.runner.x, Phaser.Math.Between(400,600),  'platform0', 0).setOrigin(0,0).setScale(2);
         this.plats += 1;
         console.log(this.newPlatform.x);
         this.physics.add.collider(this.runner, this.newPlatform);
         this.platformGroup.add(this.newPlatform);
+        
 
         // this.platforms.add(this.newPlatform);
 
