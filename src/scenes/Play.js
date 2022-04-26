@@ -22,6 +22,7 @@ class Play extends Phaser.Scene {
         this.load.image('block2', './assets/Level-Design/Platform-Block (2).png');
         this.load.image('block3', './assets/Level-Design/Platform-Block (3).png');
         this.load.image('block4', './assets/Level-Design/Platform-Block (4).png');
+        this.load.image('inventory', './assets/UI/Inventory.png');
         this.load.spritesheet('jumping', 'assets/Player-Sprites/Player1-Jump2(R)-Sheet.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -42,6 +43,9 @@ class Play extends Phaser.Scene {
         // ADDING BACKGROUND
         this.sky = this.add.tileSprite(0,0, game.config.width, game.config.height, 'sky').setOrigin(0,0).setScale(1);
         this.clouds = this.add.tileSprite(0,0, game.config.width, game.config.height, 'clouds').setOrigin(0,0).setScale(1);
+        this.inventory = this.add.image(game.config.width, game.config.height, 'inventory').setScale(4).setOrigin(1,1);
+        this.inventory.x -= this.inventory.width;
+        this.inventory.y -= this.inventory.height;
 
         //ANIMATIONS
         const runnerIdle = this.anims.create({
@@ -101,13 +105,10 @@ class Play extends Phaser.Scene {
 
         // MOUSE CONTROLS
         this.input.on('pointerdown', function (pointer) {
-
-            if (pointer.leftButtonDown())
-            {
-                if (pointer.getDuration() > 500)
-                {
-                    this.add.sprite(pointer.x, pointer.y, 'bearTrap');
-                }
+            console.log('mouse1');
+            if (this.selectedTrap == true) {
+                console.log('placing trap');
+                this.add.sprite(pointer.x, pointer.y, 'bearTrap').setScale(2.5);
             }
         }, this);
 
