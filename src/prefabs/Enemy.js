@@ -7,6 +7,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.body.allowGravity = false;
         this.points = pointValue;
         this.enemySpeed = game.settings.worldSpeed;
+        this.setSize(64, 600);
     }
 
     update() {
@@ -16,4 +17,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     }
     
-}
+    fall() {
+        // this.destroy();
+        this.y += Phaser.Math.Between(4,9);
+    }
+    
+    
+} 
