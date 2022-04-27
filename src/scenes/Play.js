@@ -32,20 +32,46 @@ class Play extends Phaser.Scene {
 
     create() {
         // hiding mouse
-        let canvas = this.sys.canvas;
-        canvas.style.cursor = 'none';
+        // let canvas = this.sys.canvas;
+        // canvas.style.cursor = 'none';
 
         // remove context menu on right click
-        // this.input.mouse.disableContextMenu();
+        this.input.mouse.disableContextMenu();
 
         this.plats = 0;     // number of platforms generated
-        this.e = 0;
+        this.e = 0;         // number of enemies generated
+
         // ADDING BACKGROUND
         this.sky = this.add.tileSprite(0,0, game.config.width, game.config.height, 'sky').setOrigin(0,0).setScale(1);
         this.clouds = this.add.tileSprite(0,0, game.config.width, game.config.height, 'clouds').setOrigin(0,0).setScale(1);
+
+        // ADDING INVENTORY SLOTS
         this.inventory = this.add.image(game.config.width, game.config.height, 'inventory').setScale(4).setOrigin(1,1);
         this.inventory.x -= this.inventory.width;
         this.inventory.y -= this.inventory.height;
+
+        this.inv2 = this.add.rectangle(this.inventory.x, this.inventory.y, this.inventory.width/2, this.inventory.height, 0xFF0000).setOrigin(1,1).setScale(4);
+        this.inv1 = this.add.rectangle(this.inventory.x - this.inventory.width * 2, this.inventory.y, this.inventory.width/2, this.inventory.height, 0x2200FF).setOrigin(1,1).setScale(4);
+        this.inv2.alpha = 0.01;
+        this.inv1.alpha = 0.01;
+        this.inv1Highlight = this.add.rectangle(this.inventory.x - this.inventory.width * 2, this.inventory.y, this.inventory.width/2, this.inventory.height, 0x22FF00, 0).setOrigin(1,1).setScale(4);
+        this.inv1Highlight.isStroked = true;
+        this.inv1Highlight.lineWidth = 2;
+        this.inv1Highlight.strokeColor = 0xFDFF9C;
+
+        this.inv2Highlight = this.add.rectangle(this.inventory.x, this.inventory.y, this.inventory.width/2, this.inventory.height, 0x22FF00, 0).setOrigin(1,1).setScale(4);
+        this.inv2Highlight.isStroked = true;
+        this.inv2Highlight.lineWidth = 2;
+        this.inv2Highlight.strokeColor = 0xFDFF9C;
+            // fillAlpha: 100,
+            // isStroked: true,
+            // lineWidth: 0
+        //}).setOrigin(1,1).setScale(4);
+
+
+
+        this.selectedTrap = true;
+        this.selectedOther = false;
 
         //ANIMATIONS
         const runnerIdle = this.anims.create({
@@ -94,8 +120,6 @@ class Play extends Phaser.Scene {
         this.platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
         //this.movingContainer.add([platform0]);
         
-        
-
 
         // player 1 keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -104,8 +128,23 @@ class Play extends Phaser.Scene {
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
         // MOUSE CONTROLS
+            // Trap selection
+        this.inv1.setInteractive();
+        this.inv1.on('pointerdown', function (pointer) {
+            this.selectedTrap = true;
+            this.selectedOther = false;
+        }, this);
+            // other selection
+        this.inv2.setInteractive();
+        this.inv2.on('pointerdown', function (pointer) {
+            console.log('on inv2');
+            this.selectedTrap = false;
+            this.selectedOther = true;
+        }, this);
+
         this.input.on('pointerdown', function (pointer) {
             console.log('mouse1');
+
             if (this.selectedTrap == true) {
                 console.log('placing trap');
                 this.add.sprite(pointer.x, pointer.y, 'bearTrap').setScale(2.5);
@@ -141,7 +180,7 @@ class Play extends Phaser.Scene {
         this.enemyGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.enemyGroup);
         let generateEnemy = this.time.addEvent({ delay: 200, callback: () =>{
-            this.enemyGenerate();
+            // this.enemyGenerate();
         },  loop: true });
 
         this.physics.add.overlap(this.runner, this.enemyGroup, this.fallActivate, null, this);
@@ -151,18 +190,37 @@ class Play extends Phaser.Scene {
 
 
         // adding cursor sprite
-        this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
+        // this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
     }
 
     update() {
-        this.cursor.setDepth(0.5);
+        // this.cursor.setDepth(0.5);
         // console.log(this.cursor.depth);
+
         // updating mouse cursor sprite position
-        this.cursor.x = game.input.mousePointer.x;
-        this.cursor.y = game.input.mousePointer.y;
+        // this.cursor.x = game.input.mousePointer.x;
+        // this.cursor.y = game.input.mousePointer.y;
+        
+        // Inventory Highlight Appearance
+        if (this.selectedTrap == true) {
+            this.inv1Highlight.alpha = 100;
+        } else {
+            this.inv1Highlight.alpha = 0;
+        }
+
+        if (this.selectedOther == true) {
+            this.inv2Highlight.alpha = 100;
+        } else {
+            this.inv2Highlight.alpha = 0;
+        }
+
+        // Check Mouse Location
 
 
-        this.platform0.x -= 7;
+
+
+
+        this.platform0.x -= 0;
 
         // each enemy object //
         for (let i = 0; i < this.enemyGroup.getLength(); i++) {
@@ -176,7 +234,7 @@ class Play extends Phaser.Scene {
           }, this);
 
         // Moving Backgrounds
-        this.sky.tilePositionX += 0.01;
+        this.sky.tilePositionX += 0.05;
         this.clouds.tilePositionX += 0.5;
 
         if (this.runner.y > 800) {
@@ -189,6 +247,7 @@ class Play extends Phaser.Scene {
             this.runner.update();
         }
 
+        console.log(this.selectedTrap);
         // console.log(game.settings.worldSpeed);
         // console.log('Number of platforms: ' + this.plats);
 
