@@ -74,13 +74,13 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
 
         // running
         if(keyA.isDown || keyD.isDown) {
-            if(keyA.isDown && this.x >= game.config.width * (0.5/8)) {
+            if(keyA.isDown && this.x >= 0) {
                 this.flipX = true;
                 this.Running = true;
                 this.idleLooping = false;
                 this.x -= this.moveSpeed;
             }
-            if (keyD.isDown && this.x <= game.config.width * (3/8)) {
+            if (keyD.isDown && this.x <= game.config.width) {
                 this.flipX = false;
                 this.Running = true;
                 this.idleLooping = false;
@@ -91,12 +91,12 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
             this.Running = false;
             this.runLooping = false;
         }
-        // Speed Up World if Player is Pushing the Edge
-        if (keyD.isDown && this.x >= game.config.width * (3/8)) {
-            game.settings.worldSpeed = 10;
-        } else {
-            game.settings.worldSpeed = 7;
-        }
+        // // Speed Up World if Player is Pushing the Edge
+        // if (keyD.isDown && this.x >= game.config.width * (3/8)) {
+        //     game.settings.worldSpeed = 10;
+        // } else {
+        //     game.settings.worldSpeed = 7;
+        // }
 
         // sliding
         
