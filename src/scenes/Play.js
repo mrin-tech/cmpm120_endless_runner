@@ -236,7 +236,13 @@ class Play extends Phaser.Scene {
         } else {
             this.inv2Highlight.alpha = 0;
         }
-
+        // delete platforms that move out of frame
+        this.platformGroup.getChildren().forEach(function(platform){
+            if(platform.x + (platform.width*1.9) < 0) {
+                this.platformGroup.killAndHide(platform);
+                this.platformGroup.remove(platform);
+            }
+        }, this);
         // Check Mouse Location
 
 
