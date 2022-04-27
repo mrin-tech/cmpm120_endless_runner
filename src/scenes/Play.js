@@ -49,6 +49,7 @@ class Play extends Phaser.Scene {
         this.inventory = this.add.image(game.config.width, game.config.height, 'inventory').setScale(4).setOrigin(1,1);
         this.inventory.x -= this.inventory.width;
         this.inventory.y -= this.inventory.height;
+        this.invTrap = this.add.image(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 15, 'bearTrap', 1).setOrigin(1,1).setScale(3);
 
         this.inv2 = this.add.rectangle(this.inventory.x, this.inventory.y, this.inventory.width/2, this.inventory.height, 0xFF0000).setOrigin(1,1).setScale(4);
         this.inv1 = this.add.rectangle(this.inventory.x - this.inventory.width * 2, this.inventory.y, this.inventory.width/2, this.inventory.height, 0x2200FF).setOrigin(1,1).setScale(4);
@@ -211,6 +212,7 @@ class Play extends Phaser.Scene {
 
     update() {
         this.inventory.setDepth(0.5);
+        this.invTrap.setDepth(0.5);
         this.inv1.setDepth(0.5);
         this.inv2.setDepth(0.5);
         this.inv1Highlight.setDepth(0.5);
