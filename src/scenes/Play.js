@@ -220,7 +220,7 @@ class Play extends Phaser.Scene {
 
 
 
-        this.platform0.x -= 0;
+        this.platform0.x -= 6;
 
         // each enemy object //
         for (let i = 0; i < this.enemyGroup.getLength(); i++) {
