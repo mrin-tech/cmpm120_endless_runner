@@ -32,8 +32,8 @@ class Play extends Phaser.Scene {
 
     create() {
         // hiding mouse
-        // let canvas = this.sys.canvas;
-        // canvas.style.cursor = 'none';
+        let canvas = this.sys.canvas;
+        canvas.style.cursor = 'none';
 
         // remove context menu on right click
         this.input.mouse.disableContextMenu();
@@ -103,12 +103,18 @@ class Play extends Phaser.Scene {
             frameRate: 12,
             //repeat: -1
         });
-        // creating moving container
-        //this.movingContainer = this.add.container();
+
+        const bearTrapActive = this.anims.create({
+            key: 'trapActive',
+            frames: this.anims.generateFrameNames('bearTrap', {
+                start: 2,
+                end: 1
+            }),
+            frameRate: 4,
+        });
+
 
         // temporary sprites //
-        //this.runner1 = this.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'runner').setScale(4).setOrigin(0.5, 1);
-            //runner
         this.runner = new Player1(this, game.config.width/3, 500, 'temp').setScale(4).setOrigin(0.5, 1);
 
         // creating platform group
@@ -147,7 +153,7 @@ class Play extends Phaser.Scene {
 
             if (this.selectedTrap == true) {
                 console.log('placing trap');
-                this.add.sprite(pointer.x, pointer.y, 'bearTrap').setScale(2.5);
+                this.trapp = this.spawnTrap(pointer.x, pointer.y);
             }
         }, this);
 
@@ -156,6 +162,8 @@ class Play extends Phaser.Scene {
         // this.cameras.main.setSize(960, 610);
         // this.cameras.main.startFollow(this.runner);
 
+
+        // PLATFORM GROUP
         this.counter = 500;
         this.enemyCounter = 700;
         this.platformGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
@@ -164,6 +172,14 @@ class Play extends Phaser.Scene {
         let generate = this.time.addEvent({ delay: 200, callback: () =>{
             this.platformGenerate();
         },  loop: true });
+
+        // BEAR TRAP GROUP
+        this.trapGroup = this.physics.add.group();
+        this.trapGroup.runChildUpdate = true;
+        this.physics.add.collider(this.runner, this.trapGroup);
+        this.physics.add.collider(this.platformGroup, this.trapGroup);
+        this.physics.add.overlap(this.runner, this.trapGroup, this.trapActivate, null, this);
+        
 
         // generate collider
         // this.collideGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
@@ -180,7 +196,7 @@ class Play extends Phaser.Scene {
         this.enemyGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.enemyGroup);
         let generateEnemy = this.time.addEvent({ delay: 200, callback: () =>{
-            this.enemyGenerate();
+            // this.enemyGenerate();
         },  loop: true });
 
         this.physics.add.overlap(this.runner, this.enemyGroup, this.fallActivate, null, this);
@@ -190,16 +206,21 @@ class Play extends Phaser.Scene {
 
 
         // adding cursor sprite
-        // this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
+        this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
     }
 
     update() {
-        // this.cursor.setDepth(0.5);
+        this.inventory.setDepth(0.5);
+        this.inv1.setDepth(0.5);
+        this.inv2.setDepth(0.5);
+        this.inv1Highlight.setDepth(0.5);
+        this.inv2Highlight.setDepth(0.5);
+        this.cursor.setDepth(0.5);
         // console.log(this.cursor.depth);
 
         // updating mouse cursor sprite position
-        // this.cursor.x = game.input.mousePointer.x;
-        // this.cursor.y = game.input.mousePointer.y;
+        this.cursor.x = game.input.mousePointer.x - 1;
+        this.cursor.y = game.input.mousePointer.y + 1;
         
         // Inventory Highlight Appearance
         if (this.selectedTrap == true) {
@@ -226,7 +247,7 @@ class Play extends Phaser.Scene {
 
 
 
-        this.platform0.x -= 6;
+        this.platform0.x -= 7;
 
         // each enemy object //
         for (let i = 0; i < this.enemyGroup.getLength(); i++) {
@@ -249,9 +270,6 @@ class Play extends Phaser.Scene {
             this.scene.start('gameOverScene'); 
         }
 
-        if (this.gameOver == false) {
-            this.runner.update();
-        }
 
         console.log(this.selectedTrap);
         // console.log(game.settings.worldSpeed);
@@ -271,6 +289,11 @@ class Play extends Phaser.Scene {
         //     }
         // }
         
+
+        if (this.gameOver == false) {
+            this.runner.update();
+            //this.trapp.update();
+        }
     }
 
 
@@ -345,7 +368,16 @@ class Play extends Phaser.Scene {
 
     }
 
+    spawnTrap(pointerx, pointery) {
+        this.newTrap = new Trap(this, pointerx, pointery, 'bearTrap', 2).setScale(2.5);
+        this.trapGroup.add(this.newTrap);
+    }
+
     fallActivate(sprite, enemy) {
         enemy.fall();
+    }
+
+    trapActivate(sprite, trap)  {
+        trap.activate();
     }
 }
