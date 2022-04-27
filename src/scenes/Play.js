@@ -197,7 +197,7 @@ class Play extends Phaser.Scene {
         this.enemyGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.enemyGroup);
         let generateEnemy = this.time.addEvent({ delay: 200, callback: () =>{
-            // this.enemyGenerate();
+            this.enemyGenerate();
         },  loop: true });
 
         this.physics.add.overlap(this.runner, this.enemyGroup, this.fallActivate, null, this);
