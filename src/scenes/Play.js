@@ -73,6 +73,38 @@ class Play extends Phaser.Scene {
 
         this.selectedTrap = true;
         this.selectedOther = false;
+        
+        
+        //score
+         // initialize score
+         this.p1Score = 0;
+
+         // display score
+         let scoreConfig = {
+             //fontFamily: 'Times New Roman',
+             fontSize: '70px',
+             backgroundColor: '#564141',
+             color: '#FFFFFF',
+             align: 'left',
+             padding: {
+                 top: 5,
+                 bottom: 5,
+             },
+             fixedWidth: 300
+         }
+         this.score = this.add.text(borderUISize + borderPadding*26, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+        
+         //Score Increase
+        this.time.addEvent({
+            delay: 75,
+            callback: ()=>{
+                if (this.p1Score < 999999) {
+                     this.p1Score+= 1
+                    this.score.text = this.p1Score
+                }
+            },
+            loop: true
+        })
 
         //ANIMATIONS
         const runnerIdle = this.anims.create({
