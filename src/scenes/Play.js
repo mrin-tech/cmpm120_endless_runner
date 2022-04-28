@@ -180,17 +180,6 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.runner, this.trapGroup);
         this.physics.add.collider(this.platformGroup, this.trapGroup);
         this.physics.add.overlap(this.runner, this.trapGroup, this.trapActivate, null, this);
-        
-
-        // generate collider
-        // this.collideGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
-        // this.collideGroup.runChildUpdate = true;
-        // this.physics.add.collider(this.runner, this.collideGroup);
-        // let generateCollider = this.time.addEvent({ delay: 200, callback: () =>{
-        //     this.colliderGenerate();
-        // },  loop: true });
-
-        // this.physics.add.overlap(this.runner, this.collideGroup, this.fallActivate, null, this);
 
         // generate enemy that is not part of the inventory
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
@@ -243,6 +232,16 @@ class Play extends Phaser.Scene {
                 this.platformGroup.remove(platform);
             }
         }, this);
+
+        // delete enemies that move out of frame
+
+        this.enemyGroup.getChildren().forEach(function(enemy){
+            if(enemy.y > 600) {
+                this.enemyGroup.killAndHide(enemy);
+                this.enemyGroup.remove(enemy);
+            }
+        }, this);
+
         // Check Mouse Location
 
 
@@ -250,14 +249,8 @@ class Play extends Phaser.Scene {
 
 
         this.platform0.x -= 7;
-        // each enemy object //
-        for (let i = 0; i < this.enemyGroup.getLength(); i++) {
-            console.log("enemy", i,  this.enemyGroup.getChildren().find(v => v.name === "num" + i));
-        }
 
         this.enemyGroup.getChildren().forEach(function(enemy) {
-            console.log('enemy', enemy);
-            console.log('runner', this.runner.x, this.runner.y);
             this.allowGravity = true;
           }, this);
 
@@ -339,17 +332,6 @@ class Play extends Phaser.Scene {
         this.counter += Phaser.Math.Between(275,600);
     }
 
-    // colliderGenerate(){
-    //     this.newCollider = new Enemy(this, this.enemyCounter + this.runner.x, 10,  'enemy_img', 0).setOrigin(0,0).setScale(2);
-
-    //     this.newCollider.setSize(64, 600);
-        
-    //     this.physics.add.collider(this.runner, this.newCollider);
-    //     this.collideGroup.add(this.newCollider);
-    //     // this.enemyCounter += Phaser.Math.Between(900,2000);
-
-    // }
-
     enemyGenerate(){
         this.newEnemy = new Enemy(this, this.enemyCounter + this.runner.x, 10,  'enemy_img', 0).setOrigin(0,0).setScale(2);
 
@@ -361,7 +343,7 @@ class Play extends Phaser.Scene {
         this.absVal = this.newEnemy.x-game.settings.worldSpeed - this.enemyCounter;
         this.newEnemy.absPos = this.absVal;
         this.newEnemy.allowGravity = true;
-        this.newEnemy.setSize(64, 500);
+        this.newEnemy.setSize(32, 500);
 
         // this.physics.add.collider(this.runner, this.newEnemy);
         this.enemyGroup.add(this.newEnemy);
