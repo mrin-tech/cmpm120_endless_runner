@@ -27,7 +27,7 @@ class Play extends Phaser.Scene {
             frameWidth: 32,
             frameHeight: 32
         });
-        this.load.image('enemy_img', './assets/Traps/floating_cigar_bomb.png');
+        this.load.image('enemy_img', './assets/Traps/cigar_bomb.png');
     }
 
     create() {
