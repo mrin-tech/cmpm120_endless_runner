@@ -9,8 +9,8 @@ class Play extends Phaser.Scene {
         this.load.image('platform0', './assets/platform0.png');
         this.load.image('sky', './assets/sky.png');
         this.load.image('clouds', './assets/clouds.png');
-        this.load.image('cursor', './assets/temp-cursor.png');
-        this.load.spritesheet('bearTrap', 'assets/UI/Bear-Trap-Set-Sheet.png', {
+        this.load.image('cursor', './assets/cursor.png');
+        this.load.spritesheet('bearTrap', 'assets/Traps/Bear-Trap-Set-Sheet.png', {
             frameWidth: 16,
             frameHeight: 16
         });
@@ -22,12 +22,12 @@ class Play extends Phaser.Scene {
         this.load.image('block2', './assets/Level-Design/Platform-Block (2).png');
         this.load.image('block3', './assets/Level-Design/Platform-Block (3).png');
         this.load.image('block4', './assets/Level-Design/Platform-Block (4).png');
-        this.load.image('inventory', './assets/UI/Inventory.png');
+        this.load.image('inventory', './assets/Traps/Inventory.png');
         this.load.spritesheet('jumping', 'assets/Player-Sprites/Player1-Jump2(R)-Sheet.png', {
             frameWidth: 32,
             frameHeight: 32
         });
-        this.load.image('enemy_img', './assets/temp2.png');
+        this.load.image('enemy_img', './assets/Traps/floating_cigar_bomb.png');
     }
 
     create() {
@@ -250,7 +250,6 @@ class Play extends Phaser.Scene {
 
 
         this.platform0.x -= 7;
-
         // each enemy object //
         for (let i = 0; i < this.enemyGroup.getLength(); i++) {
             console.log("enemy", i,  this.enemyGroup.getChildren().find(v => v.name === "num" + i));

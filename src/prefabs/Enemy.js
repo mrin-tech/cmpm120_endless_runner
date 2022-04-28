@@ -14,12 +14,14 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.enemySpeed = game.settings.worldSpeed;
         this.x -= this.enemySpeed;
         
+        
 
     }
     
     fall() {
         // this.destroy();
-        this.y += Phaser.Math.Between(4,9);
+        //this.y += Phaser.Math.Between(4,9);
+        this.body.allowGravity = true;
     }
     
     
