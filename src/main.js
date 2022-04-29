@@ -25,3 +25,5 @@ let borderUISize = 40;
 let borderPadding = borderUISize / 3;
 let platformGroup;
 let enemyGroup;
+let hitCounter=0;
+let highScore=0;

@@ -79,6 +79,38 @@ class Play extends Phaser.Scene {
 
         this.selectedTrap = true;
         this.selectedOther = false;
+        
+        
+        //score
+         // initialize score
+         this.p1Score = '0000000';
+
+         // display score
+         let scoreConfig = {
+             //fontFamily: 'Times New Roman',
+             fontSize: '45px',
+             backgroundColor: '#564141',
+             color: '#FFFFFF',
+             align: 'left',
+             padding: {
+                 top: 5,
+                 bottom: 5,
+             },
+             fixedWidth: 170
+         }
+         this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+        
+         //Score Increase
+        this.time.addEvent({
+            delay: 75,
+            callback: ()=>{
+                if (this.p1Score < 999999) {
+                     this.p1Score = Number(this.p1Score) + Number(1)
+                    this.score.text = this.p1Score
+                }
+            },
+            loop: true
+        })
 
         //ANIMATIONS
         const runnerIdle = this.anims.create({
@@ -166,7 +198,7 @@ class Play extends Phaser.Scene {
             }
         }, this);
 
-        let distConfig =
+        let txtConfig =
         {
             fontFamily: 'Courier',
             fontSize: '28px',
@@ -177,12 +209,12 @@ class Play extends Phaser.Scene {
             top: 5,
             bottom: 5,
             },
-            fixedWidth: 100
+            fixedWidth: 50
         };
 
         // total distance travelled by runner
         this.gameTotalDistance = 0;
-        this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), distConfig);
+        this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), txtConfig);
         this.timedEvent = this.time.addEvent
         (
             {delay: 1000,
@@ -190,6 +222,8 @@ class Play extends Phaser.Scene {
             }
         );
 
+        // hit counter
+        this.displayHit = this.add.text(20, 80, this.hitCounter, txtConfig);
 
         // PLATFORM GROUP
         this.counter = 500;
