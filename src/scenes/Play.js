@@ -158,10 +158,29 @@ class Play extends Phaser.Scene {
             }
         }, this);
 
+        let distConfig =
+        {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#cdbbbc',
+            color: '#843605',
+            align: 'right',
+            padding: {
+            top: 5,
+            bottom: 5,
+            },
+            fixedWidth: 100
+        };
 
-        // camera
-        // this.cameras.main.setSize(960, 610);
-        // this.cameras.main.startFollow(this.runner);
+        // total distance travelled by runner
+        this.gameTotalDistance = 0;
+        this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), distConfig);
+        this.timedEvent = this.time.addEvent
+        (
+            {delay: 1000,
+            callback: () => {this.gameTotalDistance += 1000; this.displayDist.text = this.formatDist(this.gameTotalDistance);}, scope: this, loop: true
+            }
+        );
 
 
         // PLATFORM GROUP
@@ -290,12 +309,13 @@ class Play extends Phaser.Scene {
         }
     }
 
+    formatDist(ms) {
 
-    allowGrav(runner, enemy) {
-        if (runner.y == enemy.y) return true;
-        else return false
+        let sec = ms/1000;
+        return `${sec}`;
+
     }
-
+    
     // generate platforms through random blocks
     createPlatform(xVal, yVal) {
         // randomizes blocks to create a platform
