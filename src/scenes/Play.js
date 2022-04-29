@@ -158,7 +158,7 @@ class Play extends Phaser.Scene {
             }
         }, this);
 
-        let distConfig =
+        let txtConfig =
         {
             fontFamily: 'Courier',
             fontSize: '28px',
@@ -169,12 +169,12 @@ class Play extends Phaser.Scene {
             top: 5,
             bottom: 5,
             },
-            fixedWidth: 100
+            fixedWidth: 50
         };
 
         // total distance travelled by runner
         this.gameTotalDistance = 0;
-        this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), distConfig);
+        this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), txtConfig);
         this.timedEvent = this.time.addEvent
         (
             {delay: 1000,
@@ -182,6 +182,8 @@ class Play extends Phaser.Scene {
             }
         );
 
+        // hit counter
+        this.displayHit = this.add.text(20, 80, this.hitCounter, txtConfig);
 
         // PLATFORM GROUP
         this.counter = 500;
