@@ -108,10 +108,10 @@ class Play extends Phaser.Scene {
         const bearTrapActive = this.anims.create({
             key: 'trapActive',
             frames: this.anims.generateFrameNames('bearTrap', {
-                start: 2,
-                end: 1
+                start: 0,
+                end: 4
             }),
-            frameRate: 4,
+            frameRate: 18,
         });
 
 
@@ -381,6 +381,9 @@ class Play extends Phaser.Scene {
     }
 
     trapActivate(sprite, trap)  {
-        trap.activate();
+        if (trap.animated != true) {
+            trap.activate();
+            trap.animated = true;
+        }
     }
 }
