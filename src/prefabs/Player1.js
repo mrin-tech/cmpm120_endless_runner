@@ -11,6 +11,8 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         this.idleLooping = false;
         this.runLooping = false;
         this.jumpLooping = false;
+        this.dead = false;
+        this.hearts = 3;
     }
 
     preload() {
@@ -21,8 +23,8 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
     }
 
     create() {
-        player.setBounce(0.5);
-        player.setCollideWorldBounds(true);
+        this.setBounce(0.5);
+        this.setCollideWorldBounds(true);
         
     }
 
@@ -38,78 +40,99 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         // //standing
 
         //checking when to end jumping anim
-        if (this.onGround == true) {
-            this.Jumping = false;
-            this.jumpLooping = false;
-        }
-
-        // checking when to play idle anim
-        if (this.onGround && this.Running == false && this.idleLooping == false && this.jumpLooping == false) {
-            this.flipX = false;
-            this.play({ key: 'idle' });
-            // console.log('idle');
-            this.idleLooping = true;
-        }
-        // checking when to play running anim
-        if (this.Running && this.onGround && this.runLooping == false) {
-            this.play({ key: 'run' });
-            // console.log('run');
-            this.runLooping = true;
-        }
-        //checking when to play jumping anim
-        if (this.Jumping == true && this.jumpLooping == false) {
-            this.play({ key: 'jump' });
-            this.idleLooping = false;
-            this.runLooping = false;
-            this.jumpLooping = true;
-        }
-
-        //changing look direction
-        if (keyA.isDown) {
-            this.flipX = true;
-        }
-        if (keyD.isDown) {
-            this.flipX = false;
-        }
-
-        // running
-        if(keyA.isDown || keyD.isDown) {
-            if(keyA.isDown && this.x >= 0) {
-                this.flipX = true;
-                this.Running = true;
-                this.idleLooping = false;
-                this.x -= this.moveSpeed;
+        if (!this.dead) {
+            if (this.onGround == true) {
+                this.Jumping = false;
+                this.jumpLooping = false;
             }
-            if (keyD.isDown && this.x <= game.config.width) {
+
+            // checking when to play idle anim
+            if (this.onGround && this.Running == false && this.idleLooping == false && this.jumpLooping == false) {
                 this.flipX = false;
-                this.Running = true;
+                this.play({ key: 'idle' });
+                // console.log('idle');
+                this.idleLooping = true;
+            }
+            // checking when to play running anim
+            if (this.Running && this.onGround && this.runLooping == false) {
+                this.play({ key: 'run' });
+                // console.log('run');
+                this.runLooping = true;
+            }
+            //checking when to play jumping anim
+            if (this.Jumping == true && this.jumpLooping == false) {
+                this.play({ key: 'jump' });
                 this.idleLooping = false;
-                this.x += this.moveSpeed;
+                this.runLooping = false;
+                this.jumpLooping = true;
+            }
+
+            //changing look direction
+            if (keyA.isDown) {
+                this.flipX = true;
+            }
+            if (keyD.isDown) {
+                this.flipX = false;
+            }
+
+            // running
+            if(keyA.isDown || keyD.isDown) {
+                if(keyA.isDown && this.x >= 0) {
+                    this.flipX = true;
+                    this.Running = true;
+                    this.idleLooping = false;
+                    this.x -= this.moveSpeed;
+                }
+                if (keyD.isDown && this.x <= game.config.width) {
+                    this.flipX = false;
+                    this.Running = true;
+                    this.idleLooping = false;
+                    this.x += this.moveSpeed;
+                }
+            }
+            else {
+                this.Running = false;
+                this.runLooping = false;
+            }
+
+            // // Speed Up World if Player is Pushing the Edge
+            // if (keyD.isDown && this.x >= game.config.width * (3/8)) {
+            //     game.settings.worldSpeed = 10;
+            // } else {
+            //     game.settings.worldSpeed = 7;
+            // }
+
+            // sliding
+            
+            // jumping
+            if (this.onGround) {            //reset the jump counter when on the ground
+                this.jumps = 0;
+            }
+
+            if (Phaser.Input.Keyboard.JustDown(keyW) && (this.onGround || this.jumps < 2)) {        //checks if the runner can jump
+                this.setVelocityY(-900);        // the jump
+                this.jumps += 1;
+                this.Jumping = true;
+            }
+        } else {
+            if (this.dyingAnim = false) {
+                // dying animation
+                this.dyingAnim = true;
             }
         }
-        else {
-            this.Running = false;
-            this.runLooping = false;
+        if (this.hearts < 1) {
+            this.dead = true;
         }
-        // // Speed Up World if Player is Pushing the Edge
-        // if (keyD.isDown && this.x >= game.config.width * (3/8)) {
-        //     game.settings.worldSpeed = 10;
-        // } else {
-        //     game.settings.worldSpeed = 7;
-        // }
+    }
 
-        // sliding
+    hurt() {
+        this.hearts -= 1;
+        // hurt anim / screen shake
         
-        // jumping
-        if (this.onGround) {            //reset the jump counter when on the ground
-            this.jumps = 0;
-        }
+    }
 
-        if (Phaser.Input.Keyboard.JustDown(keyW) && (this.onGround || this.jumps < 2)) {        //checks if the runner can jump
-            this.setVelocityY(-900);        // the jump
-            this.jumps += 1;
-            this.Jumping = true;
-        }
-        
+    die() {
+        // death animations?
+        // runner soul goes up
     }
 }
