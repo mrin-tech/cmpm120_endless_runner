@@ -77,12 +77,12 @@ class Play extends Phaser.Scene {
         
         //score
          // initialize score
-         this.p1Score = 0;
+         this.p1Score = '0000000';
 
          // display score
          let scoreConfig = {
              //fontFamily: 'Times New Roman',
-             fontSize: '70px',
+             fontSize: '45px',
              backgroundColor: '#564141',
              color: '#FFFFFF',
              align: 'left',
@@ -90,16 +90,16 @@ class Play extends Phaser.Scene {
                  top: 5,
                  bottom: 5,
              },
-             fixedWidth: 300
+             fixedWidth: 170
          }
-         this.score = this.add.text(borderUISize + borderPadding*26, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+         this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
         
          //Score Increase
         this.time.addEvent({
             delay: 75,
             callback: ()=>{
                 if (this.p1Score < 999999) {
-                     this.p1Score+= 1
+                     this.p1Score = Number(this.p1Score) + Number(1)
                     this.score.text = this.p1Score
                 }
             },
