@@ -140,10 +140,10 @@ class Play extends Phaser.Scene {
         const bearTrapActive = this.anims.create({
             key: 'trapActive',
             frames: this.anims.generateFrameNames('bearTrap', {
-                start: 2,
-                end: 1
+                start: 0,
+                end: 4
             }),
-            frameRate: 4,
+            frameRate: 18,
         });
 
 
@@ -190,11 +190,32 @@ class Play extends Phaser.Scene {
             }
         }, this);
 
+        let txtConfig =
+        {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#cdbbbc',
+            color: '#843605',
+            align: 'right',
+            padding: {
+            top: 5,
+            bottom: 5,
+            },
+            fixedWidth: 50
+        };
 
-        // camera
-        // this.cameras.main.setSize(960, 610);
-        // this.cameras.main.startFollow(this.runner);
+        // total distance travelled by runner
+        this.gameTotalDistance = 0;
+        this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), txtConfig);
+        this.timedEvent = this.time.addEvent
+        (
+            {delay: 1000,
+            callback: () => {this.gameTotalDistance += 1000; this.displayDist.text = this.formatDist(this.gameTotalDistance);}, scope: this, loop: true
+            }
+        );
 
+        // hit counter
+        this.displayHit = this.add.text(20, 80, this.hitCounter, txtConfig);
 
         // PLATFORM GROUP
         this.counter = 500;
@@ -212,17 +233,6 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.runner, this.trapGroup);
         this.physics.add.collider(this.platformGroup, this.trapGroup);
         this.physics.add.overlap(this.runner, this.trapGroup, this.trapActivate, null, this);
-        
-
-        // generate collider
-        // this.collideGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
-        // this.collideGroup.runChildUpdate = true;
-        // this.physics.add.collider(this.runner, this.collideGroup);
-        // let generateCollider = this.time.addEvent({ delay: 200, callback: () =>{
-        //     this.colliderGenerate();
-        // },  loop: true });
-
-        // this.physics.add.overlap(this.runner, this.collideGroup, this.fallActivate, null, this);
 
         // generate enemy that is not part of the inventory
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
@@ -270,11 +280,21 @@ class Play extends Phaser.Scene {
         }
         // delete platforms that move out of frame
         this.platformGroup.getChildren().forEach(function(platform){
-            if(platform.x + (platform.width*1.9) < 0) {
+            if(platform.x + (platform.width*2) < 0) {
                 this.platformGroup.killAndHide(platform);
                 this.platformGroup.remove(platform);
             }
         }, this);
+
+        // delete enemies that move out of frame
+
+        this.enemyGroup.getChildren().forEach(function(enemy){
+            if(enemy.y > 600) {
+                this.enemyGroup.killAndHide(enemy);
+                this.enemyGroup.remove(enemy);
+            }
+        }, this);
+
         // Check Mouse Location
 
 
@@ -282,14 +302,8 @@ class Play extends Phaser.Scene {
 
 
         this.platform0.x -= 7;
-        // each enemy object //
-        for (let i = 0; i < this.enemyGroup.getLength(); i++) {
-            console.log("enemy", i,  this.enemyGroup.getChildren().find(v => v.name === "num" + i));
-        }
 
         this.enemyGroup.getChildren().forEach(function(enemy) {
-            console.log('enemy', enemy);
-            console.log('runner', this.runner.x, this.runner.y);
             this.allowGravity = true;
           }, this);
 
@@ -329,12 +343,13 @@ class Play extends Phaser.Scene {
         }
     }
 
+    formatDist(ms) {
 
-    allowGrav(runner, enemy) {
-        if (runner.y == enemy.y) return true;
-        else return false
+        let sec = ms/1000;
+        return `${sec}`;
+
     }
-
+    
     // generate platforms through random blocks
     createPlatform(xVal, yVal) {
         // randomizes blocks to create a platform
@@ -371,17 +386,6 @@ class Play extends Phaser.Scene {
         this.counter += Phaser.Math.Between(275,600);
     }
 
-    // colliderGenerate(){
-    //     this.newCollider = new Enemy(this, this.enemyCounter + this.runner.x, 10,  'enemy_img', 0).setOrigin(0,0).setScale(2);
-
-    //     this.newCollider.setSize(64, 600);
-        
-    //     this.physics.add.collider(this.runner, this.newCollider);
-    //     this.collideGroup.add(this.newCollider);
-    //     // this.enemyCounter += Phaser.Math.Between(900,2000);
-
-    // }
-
     enemyGenerate(){
         this.newEnemy = new Enemy(this, this.enemyCounter + this.runner.x, 10,  'enemy_img', 0).setOrigin(0,0).setScale(2);
 
@@ -393,7 +397,7 @@ class Play extends Phaser.Scene {
         this.absVal = this.newEnemy.x-game.settings.worldSpeed - this.enemyCounter;
         this.newEnemy.absPos = this.absVal;
         this.newEnemy.allowGravity = true;
-        this.newEnemy.setSize(64, 500);
+        this.newEnemy.setSize(32, 500);
 
         // this.physics.add.collider(this.runner, this.newEnemy);
         this.enemyGroup.add(this.newEnemy);
@@ -411,6 +415,9 @@ class Play extends Phaser.Scene {
     }
 
     trapActivate(sprite, trap)  {
-        trap.activate();
+        if (trap.animated != true) {
+            trap.activate();
+            trap.animated = true;
+        }
     }
 }
