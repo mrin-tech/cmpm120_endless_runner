@@ -96,7 +96,7 @@ class Play extends Phaser.Scene {
 
          // display score
          let scoreConfig = {
-             //fontFamily: 'Times New Roman',
+             fontFamily: 'INVASION2000',
              fontSize: '45px',
              backgroundColor: '#564141',
              color: '#FFFFFF',
@@ -237,17 +237,14 @@ class Play extends Phaser.Scene {
         };
 
         // total distance travelled by runner
-        this.gameTotalDistance = 0;
-        this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), txtConfig);
-        this.timedEvent = this.time.addEvent
-        (
-            {delay: 1000,
-            callback: () => {this.gameTotalDistance += 1000; this.displayDist.text = this.formatDist(this.gameTotalDistance);}, scope: this, loop: true
-            }
-        );
-
-        // hit counter
-        this.displayHit = this.add.text(20, 80, this.hitCounter, txtConfig);
+        // this.gameTotalDistance = 0;
+        // this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), txtConfig);
+        // this.timedEvent = this.time.addEvent
+        // (
+        //     {delay: 1000,
+        //     callback: () => {this.gameTotalDistance += 1000; this.displayDist.text = this.formatDist(this.gameTotalDistance);}, scope: this, loop: true
+        //     }
+        // );
 
         // PLATFORM GROUP
         this.counter = 500;
@@ -274,7 +271,9 @@ class Play extends Phaser.Scene {
             this.enemyGenerate();
         },  loop: true });
 
+        this.physics.add.collider(this.runner, this.enemyGroup).active = false;
         this.physics.add.overlap(this.runner, this.enemyGroup, this.fallActivate, null, this);
+        // this.physics.add.collider(this.runner, this.enemyGroup).active = false;
 
 
         this.gameOver = false;
@@ -333,8 +332,19 @@ class Play extends Phaser.Scene {
             }
         }, this);
 
-        // delete enemies that move out of frame
 
+        if (this.touchFlag==true) {
+            console.log('touch flag is true');
+            this.DelayDeath();
+            
+            this.touchFlag = false;
+        }
+        else {
+            console.log('touch flag is false');
+        }
+
+
+        // delete enemies that move out of frame
         this.enemyGroup.getChildren().forEach(function(enemy){
             if(enemy.y > 600) {
                 this.enemyGroup.killAndHide(enemy);
@@ -444,7 +454,7 @@ class Play extends Phaser.Scene {
         this.absVal = this.newEnemy.x-game.settings.worldSpeed - this.enemyCounter;
         this.newEnemy.absPos = this.absVal;
         this.newEnemy.allowGravity = true;
-        this.newEnemy.setSize(32, 500);
+        this.newEnemy.setSize(16, 500);
 
         // this.physics.add.collider(this.runner, this.newEnemy);
         this.enemyGroup.add(this.newEnemy);
@@ -458,7 +468,10 @@ class Play extends Phaser.Scene {
     }
 
     fallActivate(sprite, enemy) {
+        this.touchFlag = true;
         enemy.fall();
+
+        
     }
 
     trapActivate(sprite, trap)  {
@@ -468,5 +481,15 @@ class Play extends Phaser.Scene {
             this.runner.hurt();
             this.cameras.main.shake(100);
         }
+    }
+
+    DelayDeath() {
+        let t = 2000;
+        this.hitEnemyBomb = this.time.addEvent({ delay: t, callback: () =>{
+            if (this.touchFlag == true) {
+                this.runner.hurt();
+            }
+            
+        },  loop: true });
     }
 }

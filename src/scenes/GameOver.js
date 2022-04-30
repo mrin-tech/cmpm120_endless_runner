@@ -12,7 +12,7 @@ class GameOver extends Phaser.Scene {
         
         // menu text configuration
         let gameOverConfig = {
-            fontFamily: 'Arial',
+            fontFamily: 'INVASION2000',
             fontSize: '20px',
             backgroundColor: '#FFC0CB',
             color: '#000000',
@@ -24,12 +24,15 @@ class GameOver extends Phaser.Scene {
                 left: 5
             },
         }
-        
+        gameOverConfig.fontSize = '40px';
         // this menu text is temporary for now
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'Game Over', gameOverConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2, 'press <- to restart', gameOverConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, 260, 'Game Over', gameOverConfig).setOrigin(0.5);
+        gameOverConfig.fontSize = '30px';
+        this.add.text(game.config.width/2, 320, 'press <- to restart press -> to menu', gameOverConfig).setOrigin(0.5);
         
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
     }
 
     update() {
@@ -38,5 +41,9 @@ class GameOver extends Phaser.Scene {
           this.scene.start('playScene');
           this.sound.play('music');
         }
+
+        if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+            this.scene.start('menuScene');
+          }
     }
 }

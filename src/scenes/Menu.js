@@ -12,7 +12,7 @@ class Menu extends Phaser.Scene {
 
         // menu text configuration
         let menuConfig = {
-            fontFamily: 'Arial',
+            fontFamily: 'INVASION2000',
             fontSize: '20px',
             backgroundColor: '#637a68',
             color: '#dddace',
@@ -26,9 +26,13 @@ class Menu extends Phaser.Scene {
         }
         
         // this menu text is temporary for now
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'Menu screen', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2, 'player 1 uses wasd keys to move', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'press -> to start game', menuConfig).setOrigin(0.5);
+        menuConfig.fontSize = '50px';
+        this.add.text(game.config.width/2, 180, 'Game Title', menuConfig).setOrigin(0.5);
+        menuConfig.fontSize = '30px';
+        this.add.text(game.config.width/2, 300, 'Player 1 should use WAD to move', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, 340, 'Player 2 should use the mouse to put traps on screen', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, 400, 'Press -> To Play!', menuConfig).setOrigin(0.5);
+        
 
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     }
