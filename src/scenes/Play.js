@@ -64,11 +64,11 @@ class Play extends Phaser.Scene {
         this.inventory = this.add.image(game.config.width, game.config.height, 'inventory').setScale(4).setOrigin(1,1);
         this.inventory.x -= this.inventory.width;
         this.inventory.y -= this.inventory.height;
-        this.invTrap = this.add.image(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 15, 'bearTrap', 1).setOrigin(1,1).setScale(3);
-        this.invCool = this.add.sprite(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 15, 'cooldown', 0).setOrigin(1,1).setScale(3);
+        this.invTrap = this.add.image(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 15, 'bearTrap', 3).setOrigin(1,1).setScale(3);
+        this.invCool = this.add.sprite(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 5, 'cooldown', 0).setOrigin(1,1).setScale(3);
         this.invCool.alpha = 0;
-        this.invBomb = this.add.image()
-        this.invCool2 = this.add.sprite(this.inventory.x, this.inventory.y, 'cooldown', 0).setOrigin(1,1).setScale(3);
+        this.invBomb = this.add.image(this.inventory.x - 10, this.inventory.y - 5, 'cannonBall', 0).setOrigin(1,1).setScale(3);
+        this.invCool2 = this.add.sprite(this.inventory.x - 10, this.inventory.y - 5, 'cooldown', 0).setOrigin(1,1).setScale(3);
         this.invCool2.alpha = 0;
         
 
@@ -179,6 +179,15 @@ class Play extends Phaser.Scene {
             frameRate: 4,
         });
 
+        const cooldownActive2 = this.anims.create({
+            key: 'cooldownActive2',
+            frames: this.anims.generateFrameNames('cooldown', {
+                start: 0,
+                end: 16
+            }),
+            frameRate: 3,
+        });
+
         const cannonBallActive = this.anims.create({
             key: 'cannonActive',
             frames: this.anims.generateFrameNames('cannonBall', {
@@ -214,14 +223,14 @@ class Play extends Phaser.Scene {
             // Trap selection
         this.inv1.setInteractive();
         this.inv1.on('pointerdown', function (pointer) {
-            this.bearTrapCooldown = this.bearTrapMax - 1;
+            this.bearTrapCooldown -= 1;
             this.selectedTrap = true;
             this.selectedOther = false;
         }, this);
             // other selection
         this.inv2.setInteractive();
         this.inv2.on('pointerdown', function (pointer) {
-            this.cannonBombCooldown = this.cannonBombMax - 1;
+            this.cannonBombCooldown -= 1;
             this.selectedTrap = false;
             this.selectedOther = true;
         }, this);
@@ -241,7 +250,7 @@ class Play extends Phaser.Scene {
                 this.cannonBall = this.spawnCannonBall(pointer.y);
                 this.cannonBombCooldown = 0;
                 this.invCool2.alpha = 1;
-                this.invCool2.play({ key: 'cooldownActive' });
+                this.invCool2.play({ key: 'cooldownActive2' });
             }
         }, this);
 
@@ -309,11 +318,19 @@ class Play extends Phaser.Scene {
 
         // adding cursor sprite
         this.cursor = this.add.sprite(-100, -100, 'cursor').setOrigin(0,0).setScale(0.75, 0.75);
+        this.bearTrapPre = this.add.image(-100, -100, 'bearTrap', 0).setOrigin(0.5,0.5).setScale(2.5);
+        this.bearTrapPre.alpha = 0;
+        this.bearTrapPre.tint = 0xF7FF00;
+
+        this.cannonPre = this.add.image(-100, -100, 'cannonBall', 0).setOrigin(0,0.5).setScale(2.5);
+        this.cannonPre.alpha = 0;
+        this.bearTrapPre.tint = 0xF7FF00;
     }
 
     update() {
         this.inventory.setDepth(0.5);
         this.invTrap.setDepth(0.5);
+        this.invBomb.setDepth(0.5);
         this.invCool.setDepth(0.5);
         this.invCool2.setDepth(0.5);
         this.inv1.setDepth(0.5);
@@ -327,6 +344,26 @@ class Play extends Phaser.Scene {
             this.gameOver = true;
             this.scene.start('gameOverScene');
         }
+
+        // see where traps will be
+        if (this.selectedTrap == true) {
+            this.bearTrapPre.alpha = 0.5;
+        } else {
+            this.bearTrapPre.alpha = 0;
+        }
+
+        if (this.selectedOther == true) {
+            this.cannonPre.alpha = 0.5;
+        } else {
+            this.cannonPre.alpha = 0;
+        }
+
+        // update where highlight trap is
+        this.bearTrapPre.x = game.input.mousePointer.x;
+        this.bearTrapPre.y = game.input.mousePointer.y + 10;
+
+        this.cannonPre.x = game.config.width - 20;
+        this.cannonPre.y = game.input.mousePointer.y;
 
         // tracking trap cooldown and removing cooldown image
         if (this.bearTrapCooldown >= this.bearTrapMax) {
