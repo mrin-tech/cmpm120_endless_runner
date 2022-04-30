@@ -15,6 +15,10 @@ class Play extends Phaser.Scene {
             frameWidth: 16,
             frameHeight: 16
         });
+        this.load.spritesheet('cannonBall', 'assets/Traps/Bomb-Sheet.png', {
+            frameWidth: 16,
+            frameHeight: 16
+        });
         this.load.spritesheet('cooldown', 'assets/Traps/Cooldown-Sheet.png', {
             frameWidth: 16,
             frameHeight: 16
@@ -40,6 +44,7 @@ class Play extends Phaser.Scene {
         let canvas = this.sys.canvas;
         canvas.style.cursor = 'none';
 
+        // setting up camera
         const controlConfig = {
             camera: this.cameras.main
         }
@@ -62,9 +67,10 @@ class Play extends Phaser.Scene {
         this.invTrap = this.add.image(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 15, 'bearTrap', 1).setOrigin(1,1).setScale(3);
         this.invCool = this.add.sprite(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 15, 'cooldown', 0).setOrigin(1,1).setScale(3);
         this.invCool.alpha = 0;
-        if (this.invCool.alpha == 0) {
-            console.log('ahhhhhhhhhhhhhhhhhhh');
-        }
+        this.invBomb = this.add.image()
+        this.invCool2 = this.add.sprite(this.inventory.x, this.inventory.y, 'cooldown', 0).setOrigin(1,1).setScale(3);
+        this.invCool2.alpha = 0;
+        
 
         this.inv2 = this.add.rectangle(this.inventory.x, this.inventory.y, this.inventory.width/2, this.inventory.height, 0xFF0000).setOrigin(1,1).setScale(4);
         this.inv1 = this.add.rectangle(this.inventory.x - this.inventory.width * 2, this.inventory.y, this.inventory.width/2, this.inventory.height, 0x2200FF).setOrigin(1,1).setScale(4);
@@ -79,10 +85,6 @@ class Play extends Phaser.Scene {
         this.inv2Highlight.isStroked = true;
         this.inv2Highlight.lineWidth = 2;
         this.inv2Highlight.strokeColor = 0xFDFF9C;
-            // fillAlpha: 100,
-            // isStroked: true,
-            // lineWidth: 0
-        //}).setOrigin(1,1).setScale(4);
 
 
 
@@ -107,10 +109,14 @@ class Play extends Phaser.Scene {
              },
              fixedWidth: 170
          }
-        this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+         this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
 
-         // Initialize Cooldowns
-        this.bearTrapCooldown = 250;
+        // Initialize Cooldowns
+        this.bearTrapMax = 250;
+        this.cannonBombMax = 350;
+        this.bearTrapCooldown = this.bearTrapMax;
+        this.cannonBombCooldown = this.cannonBombMax;
+        
         
          //Score Increase
         this.time.addEvent({
@@ -173,6 +179,15 @@ class Play extends Phaser.Scene {
             frameRate: 4,
         });
 
+        const cannonBallActive = this.anims.create({
+            key: 'cannonActive',
+            frames: this.anims.generateFrameNames('cannonBall', {
+                start: 1,
+                end: 3
+            }),
+            frameRate: 12,
+        });
+
 
         // temporary sprites //
         this.runner = new Player1(this, game.config.width/3, 500, 'temp').setScale(4).setOrigin(0.5, 1)
@@ -199,14 +214,14 @@ class Play extends Phaser.Scene {
             // Trap selection
         this.inv1.setInteractive();
         this.inv1.on('pointerdown', function (pointer) {
-            this.bearTrapCooldown = 248;
+            this.bearTrapCooldown = this.bearTrapMax - 1;
             this.selectedTrap = true;
             this.selectedOther = false;
         }, this);
             // other selection
         this.inv2.setInteractive();
         this.inv2.on('pointerdown', function (pointer) {
-            console.log('on inv2');
+            this.cannonBombCooldown = this.cannonBombMax - 1;
             this.selectedTrap = false;
             this.selectedOther = true;
         }, this);
@@ -214,12 +229,19 @@ class Play extends Phaser.Scene {
         this.input.on('pointerdown', function (pointer) {
             console.log('mouse1');
 
-            if (this.selectedTrap == true && this.bearTrapCooldown >= 250) {
+            if (this.selectedTrap == true && this.bearTrapCooldown >= this.bearTrapMax && this.cursor.x > 500) {
                 console.log('placing trap');
                 this.trapp = this.spawnTrap(pointer.x, pointer.y);
                 this.bearTrapCooldown = 0;
                 this.invCool.alpha = 1;
                 this.invCool.play({ key: 'cooldownActive' });
+            }
+            else if (this.selectedOther == true && this.cannonBombCooldown >= this.cannonBombMax) {
+                console.log('firing cannon');
+                this.cannonBall = this.spawnCannonBall(pointer.y);
+                this.cannonBombCooldown = 0;
+                this.invCool2.alpha = 1;
+                this.invCool2.play({ key: 'cooldownActive' });
             }
         }, this);
 
@@ -264,6 +286,11 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.platformGroup, this.trapGroup);
         this.physics.add.overlap(this.runner, this.trapGroup, this.trapActivate, null, this);
 
+        // CANNONBALL GROUP
+        this.cannonGroup = this.physics.add.group({allowGravity: false, immovable: true});
+        this.cannonGroup.runChildUpdate = true;
+        this.physics.add.overlap(this.runner, this.cannonGroup, this.cannonActivate, null, this);
+
         // generate enemy that is not part of the inventory
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.enemyGroup.runChildUpdate = true;
@@ -272,7 +299,7 @@ class Play extends Phaser.Scene {
             this.enemyGenerate();
         },  loop: true });
 
-        this.physics.add.collider(this.runner, this.enemyGroup).active = false;
+        //this.physics.add.collider(this.runner, this.enemyGroup).active = false;
         this.physics.add.overlap(this.runner, this.enemyGroup, this.fallActivate, null, this);
         // this.physics.add.collider(this.runner, this.enemyGroup).active = false;
 
@@ -288,6 +315,7 @@ class Play extends Phaser.Scene {
         this.inventory.setDepth(0.5);
         this.invTrap.setDepth(0.5);
         this.invCool.setDepth(0.5);
+        this.invCool2.setDepth(0.5);
         this.inv1.setDepth(0.5);
         this.inv2.setDepth(0.5);
         this.inv1Highlight.setDepth(0.5);
@@ -301,9 +329,15 @@ class Play extends Phaser.Scene {
         }
 
         // tracking trap cooldown and removing cooldown image
-        this.bearTrapCooldown += 1;
-        if (this.bearTrapCooldown >= 250) {
+        if (this.bearTrapCooldown >= this.bearTrapMax) {
             this.invCool.alpha = 0;
+        } else {
+            this.bearTrapCooldown += 1;
+        }
+        if (this.cannonBombCooldown >= this.cannonBombMax) {
+            this.invCool2.alpha = 0;
+        } else {
+            this.cannonBombCooldown += 1;
         }
 
         console.log("trap cool " + this.bearTrapCooldown);
@@ -352,11 +386,7 @@ class Play extends Phaser.Scene {
                 this.enemyGroup.remove(enemy);
             }
         }, this);
-
-        // Check Mouse Location
-
-
-
+        
 
 
         this.platform0.x -= 7;
@@ -464,8 +494,13 @@ class Play extends Phaser.Scene {
     }
 
     spawnTrap(pointerx, pointery) {
-        this.newTrap = new Trap(this, pointerx, pointery, 'bearTrap', 2).setScale(2.5);
+        this.newTrap = new Trap(this, pointerx, pointery, 'bearTrap', 0).setScale(2.5);
         this.trapGroup.add(this.newTrap);
+    }
+
+    spawnCannonBall(pointery) {
+        this.newCannon = new CannonBall(this, 1200, pointery, 'cannonBall', 0).setScale(2.5);
+        this.cannonGroup.add(this.newCannon);
     }
 
     fallActivate(sprite, enemy) {
@@ -483,6 +518,15 @@ class Play extends Phaser.Scene {
                 this.runner.hurt();
                 this.cameras.main.shake(100);
             }
+        }
+    }
+
+    cannonActivate(sprite, cannon) {
+        if (cannon.animated != true) {
+            cannon.activate();
+            cannon.animated = true;
+            this.runner.hurt();
+            this.cameras.main.shake(100);
         }
     }
 
