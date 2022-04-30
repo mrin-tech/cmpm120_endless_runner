@@ -110,7 +110,7 @@ class Play extends Phaser.Scene {
         this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
 
          // Initialize Cooldowns
-        this.bearTrapCooldown = 0;
+        this.bearTrapCooldown = 250;
         
          //Score Increase
         this.time.addEvent({
