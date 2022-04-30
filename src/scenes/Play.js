@@ -10,6 +10,7 @@ class Play extends Phaser.Scene {
         this.load.image('sky', './assets/sky.png');
         this.load.image('clouds', './assets/clouds.png');
         this.load.image('cursor', './assets/cursor.png');
+        this.load.image('heart', './assets/heart.png');
         this.load.spritesheet('bearTrap', 'assets/Traps/Bear-Trap-Set-Sheet.png', {
             frameWidth: 16,
             frameHeight: 16
@@ -35,6 +36,11 @@ class Play extends Phaser.Scene {
         let canvas = this.sys.canvas;
         canvas.style.cursor = 'none';
 
+        const controlConfig = {
+            camera: this.cameras.main
+        }
+        this.camera = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+
         // remove context menu on right click
         this.input.mouse.disableContextMenu();
 
@@ -42,8 +48,8 @@ class Play extends Phaser.Scene {
         this.e = 0;         // number of enemies generated
 
         // ADDING BACKGROUND
-        this.sky = this.add.tileSprite(0,0, game.config.width, game.config.height, 'sky').setOrigin(0,0).setScale(1);
-        this.clouds = this.add.tileSprite(0,0, game.config.width, game.config.height, 'clouds').setOrigin(0,0).setScale(1);
+        this.sky = this.add.tileSprite(0,0, game.config.width*1.2, game.config.height*1.2, 'sky').setOrigin(0,0).setScale(1);
+        this.clouds = this.add.tileSprite(0,0, game.config.width*1.2, game.config.height*1.2, 'clouds').setOrigin(0,0).setScale(1);
 
         // ADDING INVENTORY SLOTS
         this.inventory = this.add.image(game.config.width, game.config.height, 'inventory').setScale(4).setOrigin(1,1);
@@ -140,7 +146,7 @@ class Play extends Phaser.Scene {
         const bearTrapActive = this.anims.create({
             key: 'trapActive',
             frames: this.anims.generateFrameNames('bearTrap', {
-                start: 0,
+                start: 2,
                 end: 4
             }),
             frameRate: 18,
@@ -148,7 +154,9 @@ class Play extends Phaser.Scene {
 
 
         // temporary sprites //
-        this.runner = new Player1(this, game.config.width/3, 500, 'temp').setScale(4).setOrigin(0.5, 1);
+        this.runner = new Player1(this, game.config.width/3, 500, 'temp').setScale(4).setOrigin(0.5, 1)
+        .setSize(20, 24)
+        .setOffset(8, 8);
 
         // creating platform group
         this.platforms = this.physics.add.group( {allowGravity: false, immovable: true } );
@@ -214,9 +222,6 @@ class Play extends Phaser.Scene {
             }
         );
 
-        // hit counter
-        this.displayHit = this.add.text(20, 80, this.hitCounter, txtConfig);
-
         // PLATFORM GROUP
         this.counter = 500;
         this.enemyCounter = 700;
@@ -230,19 +235,21 @@ class Play extends Phaser.Scene {
         // BEAR TRAP GROUP
         this.trapGroup = this.physics.add.group();
         this.trapGroup.runChildUpdate = true;
-        this.physics.add.collider(this.runner, this.trapGroup);
+        // this.physics.add.collider(this.runner, this.trapGroup);
         this.physics.add.collider(this.platformGroup, this.trapGroup);
         this.physics.add.overlap(this.runner, this.trapGroup, this.trapActivate, null, this);
 
         // generate enemy that is not part of the inventory
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.enemyGroup.runChildUpdate = true;
-        this.physics.add.collider(this.runner, this.enemyGroup);
+        // this.physics.add.collider(this.runner, this.enemyGroup);
         let generateEnemy = this.time.addEvent({ delay: 200, callback: () =>{
             this.enemyGenerate();
         },  loop: true });
 
+        this.physics.add.collider(this.runner, this.enemyGroup).active = false;
         this.physics.add.overlap(this.runner, this.enemyGroup, this.fallActivate, null, this);
+        // this.physics.add.collider(this.runner, this.enemyGroup).active = false;
 
 
         this.gameOver = false;
@@ -261,6 +268,14 @@ class Play extends Phaser.Scene {
         this.inv2Highlight.setDepth(0.5);
         this.cursor.setDepth(0.5);
         // console.log(this.cursor.depth);
+
+        if (this.runner.dead == true) {
+            this.gameOver = true;
+            this.scene.start('gameOverScene');
+        }
+
+
+        console.log('Health: ' + this.runner.hearts);
 
         // updating mouse cursor sprite position
         this.cursor.x = game.input.mousePointer.x - 1;
@@ -286,8 +301,19 @@ class Play extends Phaser.Scene {
             }
         }, this);
 
-        // delete enemies that move out of frame
 
+        if (this.touchFlag==true) {
+            console.log('touch flag is true');
+            this.DelayDeath();
+            
+            this.touchFlag = false;
+        }
+        else {
+            console.log('touch flag is false');
+        }
+
+
+        // delete enemies that move out of frame
         this.enemyGroup.getChildren().forEach(function(enemy){
             if(enemy.y > 600) {
                 this.enemyGroup.killAndHide(enemy);
@@ -397,7 +423,7 @@ class Play extends Phaser.Scene {
         this.absVal = this.newEnemy.x-game.settings.worldSpeed - this.enemyCounter;
         this.newEnemy.absPos = this.absVal;
         this.newEnemy.allowGravity = true;
-        this.newEnemy.setSize(32, 500);
+        this.newEnemy.setSize(16, 500);
 
         // this.physics.add.collider(this.runner, this.newEnemy);
         this.enemyGroup.add(this.newEnemy);
@@ -411,13 +437,28 @@ class Play extends Phaser.Scene {
     }
 
     fallActivate(sprite, enemy) {
+        this.touchFlag = true;
         enemy.fall();
+
+        
     }
 
     trapActivate(sprite, trap)  {
         if (trap.animated != true) {
             trap.activate();
             trap.animated = true;
+            this.runner.hurt();
+            this.cameras.main.shake(100);
         }
+    }
+
+    DelayDeath() {
+        let t = 2000;
+        this.hitEnemyBomb = this.time.addEvent({ delay: t, callback: () =>{
+            if (this.touchFlag == true) {
+                this.runner.hurt();
+            }
+            
+        },  loop: true });
     }
 }
