@@ -87,7 +87,7 @@ class Play extends Phaser.Scene {
 
          // display score
          let scoreConfig = {
-             fontFamily: 'INVASION2000',
+             fontFamily: 'font1',
              fontSize: '45px',
              backgroundColor: '#564141',
              color: '#FFFFFF',
@@ -213,14 +213,14 @@ class Play extends Phaser.Scene {
         };
 
         // total distance travelled by runner
-        this.gameTotalDistance = 0;
-        this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), txtConfig);
-        this.timedEvent = this.time.addEvent
-        (
-            {delay: 1000,
-            callback: () => {this.gameTotalDistance += 1000; this.displayDist.text = this.formatDist(this.gameTotalDistance);}, scope: this, loop: true
-            }
-        );
+        // this.gameTotalDistance = 0;
+        // this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), txtConfig);
+        // this.timedEvent = this.time.addEvent
+        // (
+        //     {delay: 1000,
+        //     callback: () => {this.gameTotalDistance += 1000; this.displayDist.text = this.formatDist(this.gameTotalDistance);}, scope: this, loop: true
+        //     }
+        // );
 
         // PLATFORM GROUP
         this.counter = 500;

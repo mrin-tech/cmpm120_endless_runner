@@ -11,8 +11,19 @@
             background-color: brown;
         }
     </style>
+    <!-- Referenced adding a font from: https://stackoverflow.com/questions/51217147/how-to-use-a-local-font-in-phaser-3 -->
+    <style media='screen' type='text/css'>
+        @font-face {
+          font-family: font1;
+          src: url('./assets/Level-Design/INVASION2000.TTF');
+          font-weight:400;
+          font-weight:normal;
+        }
+  </style>
+  
 </head>
 <body>
+    <div style="font-family:font1; position:absolute; left:-1000px; visibility:hidden;">.</div>
     <script src="./lib/phaser.js"></script>
     <script src="./src/prefabs/Trap.js"></script>
     <script src="./src/prefabs/Enemy.js"></script>
