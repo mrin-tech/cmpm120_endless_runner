@@ -15,6 +15,10 @@ class Play extends Phaser.Scene {
             frameWidth: 16,
             frameHeight: 16
         });
+        this.load.spritesheet('cooldown', 'assets/Traps/Cooldown-Sheet.png', {
+            frameWidth: 16,
+            frameHeight: 16
+        });
         this.load.spritesheet('runner', 'assets/Player-Sprites/idle-run-temp.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -56,6 +60,11 @@ class Play extends Phaser.Scene {
         this.inventory.x -= this.inventory.width;
         this.inventory.y -= this.inventory.height;
         this.invTrap = this.add.image(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 15, 'bearTrap', 1).setOrigin(1,1).setScale(3);
+        this.invCool = this.add.sprite(this.inventory.x - this.inventory.width * 2.25, this.inventory.y - 15, 'cooldown', 0).setOrigin(1,1).setScale(3);
+        this.invCool.alpha = 0;
+        if (this.invCool.alpha == 0) {
+            console.log('ahhhhhhhhhhhhhhhhhhh');
+        }
 
         this.inv2 = this.add.rectangle(this.inventory.x, this.inventory.y, this.inventory.width/2, this.inventory.height, 0xFF0000).setOrigin(1,1).setScale(4);
         this.inv1 = this.add.rectangle(this.inventory.x - this.inventory.width * 2, this.inventory.y, this.inventory.width/2, this.inventory.height, 0x2200FF).setOrigin(1,1).setScale(4);
@@ -98,7 +107,10 @@ class Play extends Phaser.Scene {
              },
              fixedWidth: 170
          }
-         this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+        this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+
+         // Initialize Cooldowns
+        this.bearTrapCooldown = 0;
         
          //Score Increase
         this.time.addEvent({
@@ -152,6 +164,15 @@ class Play extends Phaser.Scene {
             frameRate: 18,
         });
 
+        const cooldownActive = this.anims.create({
+            key: 'cooldownActive',
+            frames: this.anims.generateFrameNames('cooldown', {
+                start: 0,
+                end: 16
+            }),
+            frameRate: 4,
+        });
+
 
         // temporary sprites //
         this.runner = new Player1(this, game.config.width/3, 500, 'temp').setScale(4).setOrigin(0.5, 1)
@@ -192,9 +213,12 @@ class Play extends Phaser.Scene {
         this.input.on('pointerdown', function (pointer) {
             console.log('mouse1');
 
-            if (this.selectedTrap == true) {
+            if (this.selectedTrap == true && this.bearTrapCooldown >= 250) {
                 console.log('placing trap');
                 this.trapp = this.spawnTrap(pointer.x, pointer.y);
+                this.bearTrapCooldown = 0;
+                this.invCool.alpha = 1;
+                this.invCool.play({ key: 'cooldownActive' });
             }
         }, this);
 
@@ -263,6 +287,7 @@ class Play extends Phaser.Scene {
     update() {
         this.inventory.setDepth(0.5);
         this.invTrap.setDepth(0.5);
+        this.invCool.setDepth(0.5);
         this.inv1.setDepth(0.5);
         this.inv2.setDepth(0.5);
         this.inv1Highlight.setDepth(0.5);
@@ -275,7 +300,13 @@ class Play extends Phaser.Scene {
             this.scene.start('gameOverScene');
         }
 
+        // tracking trap cooldown and removing cooldown image
+        this.bearTrapCooldown += 1;
+        if (this.bearTrapCooldown >= 250) {
+            this.invCool.alpha = 0;
+        }
 
+        console.log("trap cool " + this.bearTrapCooldown);
         console.log('Health: ' + this.runner.hearts);
 
         // updating mouse cursor sprite position
