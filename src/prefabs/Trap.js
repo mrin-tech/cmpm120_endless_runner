@@ -11,6 +11,7 @@ class Trap extends Phaser.Physics.Arcade.Sprite {
 
     update() {
         this.onGround = this.body.touching.down;
+        console.log('TRAP ON GROUND' + this.onGround);
 
         if (this.onGround) {
             this.x -= this.trapSpeed;

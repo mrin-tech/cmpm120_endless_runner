@@ -199,6 +199,7 @@ class Play extends Phaser.Scene {
             // Trap selection
         this.inv1.setInteractive();
         this.inv1.on('pointerdown', function (pointer) {
+            this.bearTrapCooldown = 248;
             this.selectedTrap = true;
             this.selectedOther = false;
         }, this);
@@ -475,11 +476,13 @@ class Play extends Phaser.Scene {
     }
 
     trapActivate(sprite, trap)  {
-        if (trap.animated != true) {
-            trap.activate();
-            trap.animated = true;
-            this.runner.hurt();
-            this.cameras.main.shake(100);
+        if (trap.onGround == true) {
+            if (trap.animated != true) {
+                trap.activate();
+                trap.animated = true;
+                this.runner.hurt();
+                this.cameras.main.shake(100);
+            }
         }
     }
 
