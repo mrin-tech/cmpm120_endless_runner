@@ -12,7 +12,7 @@ class GameOver extends Phaser.Scene {
         
         // menu text configuration
         let gameOverConfig = {
-            fontFamily: 'font1',
+            fontFamily: 'INVASION2000',
             fontSize: '20px',
             backgroundColor: '#FFC0CB',
             color: '#000000',
