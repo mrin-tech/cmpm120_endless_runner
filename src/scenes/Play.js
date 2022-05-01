@@ -91,10 +91,28 @@ class Play extends Phaser.Scene {
         this.inv2Highlight.lineWidth = 2;
         this.inv2Highlight.strokeColor = 0xFDFF9C;
 
+        // pause menu text configuration
+        let menuConfig = {
+            fontFamily: 'INVASION2000',
+            fontSize: '20px',
+            backgroundColor: '#637a68',
+            color: '#dddace',
+            align: 'center',
+            padding: {
+                top: 5,
+                bottom: 5,
+                right: 5,
+                left: 5
+            },
+        }
+        menuConfig.fontSize = '50px';
+        this.pauseText = this.add.text(game.config.width/2, 180, 'PAUSED', menuConfig).setOrigin(0.5);
+        this.pauseText.alpha = 0;
 
 
         this.selectedTrap = true;
         this.selectedOther = false;
+
         
         
         //score
@@ -199,7 +217,7 @@ class Play extends Phaser.Scene {
                 start: 1,
                 end: 3
             }),
-            frameRate: 12,
+            frameRate: 14,
         });
 
 
@@ -224,6 +242,7 @@ class Play extends Phaser.Scene {
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         // MOUSE CONTROLS
             // Trap selection
@@ -358,6 +377,13 @@ class Play extends Phaser.Scene {
             this.scene.start('gameOverScene');
         }
 
+        if (Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.pauseText.alpha = 0.8;
+            this.scene.pause();
+            this.scene.launch('pauseScene');
+            this.pauseText.alpha = 0;
+        }
+
         // see where traps will be
         if (this.selectedTrap == true) {
             this.bearTrapPre.alpha = 0.5;
@@ -438,12 +464,11 @@ class Play extends Phaser.Scene {
         }, this);
         
 
-
         this.platform0.x -= 7;
 
         this.enemyGroup.getChildren().forEach(function(enemy) {
             this.allowGravity = true;
-          }, this);
+        }, this);
 
         // Moving Backgrounds
         this.sky.tilePositionX += 0.05;
@@ -553,15 +578,15 @@ class Play extends Phaser.Scene {
         this.newCannon = new CannonBall(this, 1200, pointery, 'cannonBall', 0).setScale(2.5);
         this.cannonGroup.add(this.newCannon);
 
-        var particles = this.add.particles('smoke');
+        this.particles = this.add.particles('smoke');
 
-        particles.createEmitter({
+        this.partTrail = this.particles.createEmitter({
             // frame: 'yellow',
             radial: false,
             // x: this.newCannon.x + 100,
             // y: this.newCannon.y,
             lifespan: 2000,
-            speedX: { min: 200, max: 400 },
+            speedX: { min: -200, max: -400 },
             quantity: 4,
             gravityY: -50,
             scale: { start: 3, end: 0, ease: 'Power3' },
@@ -598,6 +623,28 @@ class Play extends Phaser.Scene {
             cannon.animated = true;
             this.runner.hurt();
             this.cameras.main.shake(100);
+
+            this.expParticles = this.add.particles('smoke');
+            this.partEm = this.expParticles.createEmitter({
+                // frame: 'yellow',
+                radial: true,
+                // x: this.newCannon.x + 100,
+                // y: this.newCannon.y,
+                lifespan: 1200,
+                speed: { min: 100, max: 600 },
+                quantity: 30,
+                gravityY: 10,
+                scale: { start: 4, end: 0, ease: 'Power3' },
+                blendMode: 'ADD',
+                
+                follow: this.newCannon
+            });
+            let explode1 = this.time.addEvent({ delay: 200, callback: () =>{
+                this.deleteCannon();
+            }});
+            let explode2 = this.time.addEvent({ delay: 3000, callback: () =>{
+                this.deleteParticles();
+            }});
         }
     }
 
@@ -609,5 +656,21 @@ class Play extends Phaser.Scene {
             }
             
         },  loop: true });
+    }
+
+    deleteCannon() {
+        this.newCannon.alpha = 0;
+        this.partTrail.on = false;
+        this.partEm.on = false;
+    }
+
+    deleteParticles() {
+        this.particles.destroy();
+        this.expParticles.destroy();
+        this.newCannon.delete();
+    }
+
+    deleteTrailParticles() {
+        this.particles.destroy();
     }
 }

@@ -13,6 +13,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     update() {
         this.enemySpeed = game.settings.worldSpeed;
         this.x -= this.enemySpeed;
+
+        // delete when off screen
+        if (this.x < -500) {
+            this.destroy();
+        }
         
         
 

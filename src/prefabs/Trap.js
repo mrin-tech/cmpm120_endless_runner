@@ -16,6 +16,11 @@ class Trap extends Phaser.Physics.Arcade.Sprite {
         if (this.onGround) {
             this.x -= this.trapSpeed;
         }
+
+        // delete when off screen
+        if (this.y < 100) {
+            this.destroy();
+        }
         
 
     }

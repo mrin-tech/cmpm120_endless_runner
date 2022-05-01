@@ -10,12 +10,21 @@ class CannonBall extends Phaser.Physics.Arcade.Sprite {
 
     update() {
         this.x -= this.ballSpeed;
-        
+
+        // delete when off screen
+        if (this.x < -1000) {
+            this.scene.deleteTrailParticles();
+            this.delete();
+        }
 
     }
     
     activate() {
         this.play({ key: 'cannonActive' });
+    }
+
+    delete() {
+        this.destroy();
     }
     
 } 

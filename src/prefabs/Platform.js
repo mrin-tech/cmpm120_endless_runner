@@ -26,6 +26,11 @@ class Platform extends Phaser.GameObjects.Sprite {
     update() {
         this.platformSpeed = game.settings.worldSpeed;
         this.x -= this.platformSpeed;
+
+        // delete when off screen
+        if (this.x < -1000) {
+            this.destroy();
+        }
         
 
     }
