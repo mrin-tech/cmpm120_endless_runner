@@ -37,6 +37,8 @@ class Play extends Phaser.Scene {
             frameHeight: 32
         });
         this.load.image('enemy_img', './assets/Traps/cigar_bomb.png');
+
+        this.load.atlas('flares', './assets/flares.png', './assets/flares.json');
     }
 
     create() {
@@ -212,6 +214,7 @@ class Play extends Phaser.Scene {
         this.platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
         //this.movingContainer.add([platform0]);
         
+        this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
 
         // player 1 keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -268,16 +271,6 @@ class Play extends Phaser.Scene {
             fixedWidth: 50
         };
 
-        // total distance travelled by runner
-        // this.gameTotalDistance = 0;
-        // this.displayDist = this.add.text(20, 20, this.formatDist(this.gameTotalDistance), txtConfig);
-        // this.timedEvent = this.time.addEvent
-        // (
-        //     {delay: 1000,
-        //     callback: () => {this.gameTotalDistance += 1000; this.displayDist.text = this.formatDist(this.gameTotalDistance);}, scope: this, loop: true
-        //     }
-        // );
-
         // PLATFORM GROUP
         this.counter = 500;
         this.enemyCounter = 700;
@@ -299,6 +292,23 @@ class Play extends Phaser.Scene {
         this.cannonGroup = this.physics.add.group({allowGravity: false, immovable: true});
         this.cannonGroup.runChildUpdate = true;
         this.physics.add.overlap(this.runner, this.cannonGroup, this.cannonActivate, null, this);
+
+
+        // var particles = this.add.particles('flares');
+
+        // particles.createEmitter({
+        //     frame: 'yellow',
+        //     radial: false,
+        //     lifespan: 2000,
+        //     speedX: { min: 200, max: 400 },
+        //     quantity: 4,
+        //     gravityY: -50,
+        //     scale: { start: 0.6, end: 0, ease: 'Power3' },
+        //     blendMode: 'ADD',
+            
+        //     // follow: this.cannonGroup
+        // });
+
 
         // generate enemy that is not part of the inventory
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
@@ -538,6 +548,26 @@ class Play extends Phaser.Scene {
     spawnCannonBall(pointery) {
         this.newCannon = new CannonBall(this, 1200, pointery, 'cannonBall', 0).setScale(2.5);
         this.cannonGroup.add(this.newCannon);
+
+        var particles = this.add.particles('flares');
+
+        particles.createEmitter({
+            frame: 'yellow',
+            radial: false,
+            // x: this.newCannon.x + 100,
+            // y: this.newCannon.y,
+            lifespan: 2000,
+            speedX: { min: 200, max: 400 },
+            quantity: 4,
+            gravityY: -50,
+            scale: { start: 0.3, end: 0, ease: 'Power3' },
+            blendMode: 'ADD',
+            
+            follow: this.newCannon,
+            followOffset: {
+                   x: 20,
+                },
+        });
     }
 
     fallActivate(sprite, enemy) {
