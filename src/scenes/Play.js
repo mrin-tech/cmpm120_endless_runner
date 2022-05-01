@@ -40,6 +40,7 @@ class Play extends Phaser.Scene {
         this.load.image('enemy_img', './assets/Traps/cigar_bomb.png');
 
         this.load.atlas('flares', './assets/flares.png', './assets/flares.json');
+        this.load.image('smoke', './assets/Traps/smoke_particle.png');
     }
 
     create() {
@@ -216,7 +217,7 @@ class Play extends Phaser.Scene {
         this.platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
         //this.movingContainer.add([platform0]);
         
-        // this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
+         this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
 
         // player 1 keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -552,10 +553,10 @@ class Play extends Phaser.Scene {
         this.newCannon = new CannonBall(this, 1200, pointery, 'cannonBall', 0).setScale(2.5);
         this.cannonGroup.add(this.newCannon);
 
-        var particles = this.add.particles('flares');
+        var particles = this.add.particles('smoke');
 
         particles.createEmitter({
-            frame: 'yellow',
+            // frame: 'yellow',
             radial: false,
             // x: this.newCannon.x + 100,
             // y: this.newCannon.y,
@@ -563,7 +564,7 @@ class Play extends Phaser.Scene {
             speedX: { min: 200, max: 400 },
             quantity: 4,
             gravityY: -50,
-            scale: { start: 0.3, end: 0, ease: 'Power3' },
+            scale: { start: 3, end: 0, ease: 'Power3' },
             blendMode: 'ADD',
             
             follow: this.newCannon,
