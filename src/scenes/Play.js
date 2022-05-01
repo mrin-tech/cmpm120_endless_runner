@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
         this.load.image('clouds', './assets/clouds.png');
         this.load.image('cursor', './assets/cursor.png');
         this.load.image('heart', './assets/heart.png');
+        this.load.image('zeplin', './assets/zeplin.png');
         this.load.spritesheet('bearTrap', 'assets/Traps/Bear-Trap-Set-Sheet.png', {
             frameWidth: 16,
             frameHeight: 16
@@ -61,6 +62,7 @@ class Play extends Phaser.Scene {
         // ADDING BACKGROUND
         this.sky = this.add.tileSprite(0,0, game.config.width*1.2, game.config.height*1.2, 'sky').setOrigin(0,0).setScale(1);
         this.clouds = this.add.tileSprite(0,0, game.config.width*1.2, game.config.height*1.2, 'clouds').setOrigin(0,0).setScale(1);
+        this.zeplin = this.add.tileSprite(0,0, game.config.width*1.2, game.config.height*1.2, 'zeplin').setOrigin(0,0).setScale(1);
 
         // ADDING INVENTORY SLOTS
         this.inventory = this.add.image(game.config.width, game.config.height, 'inventory').setScale(4).setOrigin(1,1);
@@ -445,6 +447,7 @@ class Play extends Phaser.Scene {
         // Moving Backgrounds
         this.sky.tilePositionX += 0.05;
         this.clouds.tilePositionX += 0.5;
+        this.zeplin.tilePositionX += 1;
 
         if (this.runner.y > 800) {
             console.log('abc');
