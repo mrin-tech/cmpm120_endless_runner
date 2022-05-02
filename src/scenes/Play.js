@@ -291,6 +291,7 @@ class Play extends Phaser.Scene {
                 this.cannonBombCooldown = 0;
                 this.invCool2.alpha = 1;
                 this.invCool2.play({ key: 'cooldownActive2' });
+                this.sound.play('fire');
             }
         }, this);
 
@@ -639,6 +640,7 @@ class Play extends Phaser.Scene {
                 trap.animated = true;
                 this.runner.hurt();
                 this.cameras.main.shake(100);
+                this.sound.play('trapClose');
             }
         }
     }
@@ -649,6 +651,7 @@ class Play extends Phaser.Scene {
             cannon.animated = true;
             this.runner.hurt();
             this.cameras.main.shake(100);
+            this.sound.play('explode');
 
             this.expParticles = this.add.particles('smoke');
             this.partEm = this.expParticles.createEmitter({

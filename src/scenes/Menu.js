@@ -4,6 +4,9 @@ class Menu extends Phaser.Scene {
     }
     preload() {
         this.load.audio('music', './assets/Sound/Gigakoops - Ill Rip Every Tooth Out of That Shark and Make Them Into the Most Beautiful Necklace You Ever Seen.mp3');
+        this.load.audio('fire', './assets/Sound/fire.wav');
+        this.load.audio('explode', './assets/Sound/explode.wav');
+        this.load.audio('trapClose', './assets/Sound/trapClose.wav');
     }
     create() {
         // hiding mouse
