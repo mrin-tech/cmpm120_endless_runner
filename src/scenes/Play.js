@@ -41,6 +41,7 @@ class Play extends Phaser.Scene {
 
         this.load.atlas('flares', './assets/flares.png', './assets/flares.json');
         this.load.image('smoke', './assets/Traps/smoke_particle.png');
+
     }
 
     create() {
@@ -231,6 +232,8 @@ class Play extends Phaser.Scene {
             frameRate: 14,
         });
 
+        // HEARTS //
+        // this.heartsImg = this.add.image(1000, 40, 'heart').setScale(1.5);
 
         // temporary sprites //
         this.runner = new Player1(this, game.config.width/3, 500, 'temp').setScale(4).setOrigin(0.5, 1)
@@ -247,7 +250,7 @@ class Play extends Phaser.Scene {
         //this.movingContainer.add([platform0]);
         
         // DEBUG PLATFORM
-        //  this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
+        this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
 
         // player 1 keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -353,9 +356,28 @@ class Play extends Phaser.Scene {
         this.cannonPre = this.add.image(-100, -100, 'cannonBall', 0).setOrigin(0,0.5).setScale(2.5);
         this.cannonPre.alpha = 0;
         this.bearTrapPre.tint = 0xF7FF00;
+
+        this.heartImg1 = this.add.image(1000, 40, 'heart').setScale(1.5);
+        this.heartImg2 = this.add.image(900, 40, 'heart').setScale(1.5);
+        this.heartImg3 = this.add.image(800, 40, 'heart').setScale(1.5);
+        
+        // this.displayHearts(this.runner.hearts);
     }
 
     update() {
+        if (this.runner.hearts == 2) {
+            this.heartImg3.destroy();            
+        }
+        if (this.runner.hearts == 1) {
+            this.heartImg2.destroy();            
+        }
+        if (this.runner.hearts == 0) {
+            this.heartImg1.destroy();            
+        }
+
+
+        // this.displayHearts(this.runner.hearts);
+
         this.inventory.setDepth(0.5);
         this.invTrap.setDepth(0.5);
         this.invBomb.setDepth(0.5);
@@ -677,5 +699,6 @@ class Play extends Phaser.Scene {
     deleteTrailParticles() {
         this.particles.destroy();
     }
+
 
 }
