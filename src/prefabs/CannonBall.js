@@ -5,7 +5,7 @@ class CannonBall extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this); 
         this.body.allowGravity = false;
-        this.ballSpeed = game.settings.worldSpeed * 1.5;
+        this.ballSpeed = game.settings.worldSpeed * 2;
     }
 
     update() {
