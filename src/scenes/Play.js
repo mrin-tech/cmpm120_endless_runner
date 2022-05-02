@@ -330,7 +330,7 @@ class Play extends Phaser.Scene {
         this.platformGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.platformGroup.runChildUpdate = true;
         this.physics.add.collider(this.runner, this.platformGroup);
-        let generate = this.time.addEvent({ delay: 200, callback: () =>{
+        let generate = this.time.addEvent({ delay: 300, callback: () =>{
             this.platformGenerate();
         },  loop: true });
 
@@ -351,7 +351,7 @@ class Play extends Phaser.Scene {
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.enemyGroup.runChildUpdate = true;
         // this.physics.add.collider(this.runner, this.enemyGroup);
-        let generateEnemy = this.time.addEvent({ delay: 400, callback: () =>{
+        let generateEnemy = this.time.addEvent({ delay: 1000, callback: () =>{
             this.enemyGenerate();
         },  loop: true });
 
