@@ -291,17 +291,17 @@ class Play extends Phaser.Scene {
         }, this);
 
         this.input.on('pointerdown', function (pointer) {
-            console.log('mouse1');
+            //console.log('mouse1');
 
             if (this.selectedTrap == true && this.bearTrapCooldown >= this.bearTrapMax && this.cursor.x > 500) {
-                console.log('placing trap');
+                //console.log('placing trap');
                 this.trapp = this.spawnTrap(pointer.x, pointer.y);
                 this.bearTrapCooldown = 0;
                 this.invCool.alpha = 1;
                 this.invCool.play({ key: 'cooldownActive' });
             }
             else if (this.selectedOther == true && this.cannonBombCooldown >= this.cannonBombMax) {
-                console.log('firing cannon');
+                //console.log('firing cannon');
                 this.cannonBall = this.spawnCannonBall(pointer.y);
                 this.cannonBombCooldown = 0;
                 this.invCool2.alpha = 1;
@@ -462,8 +462,8 @@ class Play extends Phaser.Scene {
             this.cannonBombCooldown += 1;
         }
 
-        console.log("trap cool " + this.bearTrapCooldown);
-        console.log('Health: ' + this.runner.hearts);
+        // console.log("trap cool " + this.bearTrapCooldown);
+        // console.log('Health: ' + this.runner.hearts);
 
         // updating mouse cursor sprite position
         this.cursor.x = game.input.mousePointer.x - 1;
@@ -501,11 +501,11 @@ class Play extends Phaser.Scene {
             if(enemy.y > 600 || enemy.x < -100) {
                 this.enemyGroup.killAndHide(enemy);
                 this.enemyGroup.remove(enemy);
-                console.log('KILLED ENEMY -----------------------------------------');
+                //console.log('KILLED ENEMY -----------------------------------------');
             }
             if(enemy.x > this.runner.x - 100 && enemy.x < this.runner.x + 100) {
                 enemy.fall();
-                console.log('FALLING ENEMY');
+                //console.log('FALLING ENEMY');
             }
             if(enemy.hit == true) {
                 enemy.body.setVelocity(0,0);
@@ -525,7 +525,7 @@ class Play extends Phaser.Scene {
         this.zeplin.tilePositionX += 1;
 
 
-        console.log(this.selectedTrap);
+        //console.log(this.selectedTrap);
 
         if (this.gameOver == false) {
             this.runner.update();
@@ -533,7 +533,7 @@ class Play extends Phaser.Scene {
                 this.highScore = this.p1Score;
                 this.highScoreText.text = this.highScore;
                 this.newHighScoreText.text = 'New High Score!';
-                console.log(this.highScore, this.p1Score, globalHighScore);
+                //console.log(this.highScore, this.p1Score, globalHighScore);
             }
             if (globalHighScore > this.p1Score) {
                 this.highScore = globalHighScore;

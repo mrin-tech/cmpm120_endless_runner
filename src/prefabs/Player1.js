@@ -33,8 +33,8 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
     update() {        
         // add player core mechanics
         this.onGround = this.body.touching.down;        //checks if player is standing on solid ground
-        console.log("Jumping2: "+this.Jumping2);
-        console.log("Jumping: "+this.Jumping);
+        //console.log("Jumping2: "+this.Jumping2);
+        //console.log("Jumping: "+this.Jumping);
 
         // console.log('onGround' + this.onGround);
         // console.log(this.Running);
@@ -79,7 +79,7 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
 
             //checking when to play jumping2 anim
             if (this.Jumping2 == true && this.jumpLooping2 == false) {
-                console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+                //console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
                 this.play({ key: 'jump2' });
                 this.idleLooping = false;
                 this.runLooping = false;

@@ -34,9 +34,11 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width/2, 180, 'Escape From The Airship', menuConfig).setOrigin(0.5);
         menuConfig.fontSize = '30px';
         menuConfig.backgroundColor = '#637a68';
-        this.add.text(game.config.width/2, 300, 'Player 1 should use WAD to move', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, 340, 'Player 2 should use the mouse to put traps on screen', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, 400, 'Press -> To Play!', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, 300, 'Player 1 - use W to jump & A-D to move', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, 340, 'Player 2 - use the mouse to place traps on screen', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, 400, 'Use ESC to pause the game at any time!', menuConfig).setOrigin(0.5);
+
+        this.add.text(game.config.width/2, 500, 'Press -> To Play!', menuConfig).setOrigin(0.5);
         
 
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
