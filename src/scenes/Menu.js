@@ -30,8 +30,10 @@ class Menu extends Phaser.Scene {
         
         // this menu text is temporary for now
         menuConfig.fontSize = '50px';
-        this.add.text(game.config.width/2, 180, 'Game Title', menuConfig).setOrigin(0.5);
+        menuConfig.backgroundColor = '#3B493E';
+        this.add.text(game.config.width/2, 180, 'Escape From The Airship', menuConfig).setOrigin(0.5);
         menuConfig.fontSize = '30px';
+        menuConfig.backgroundColor = '#637a68';
         this.add.text(game.config.width/2, 300, 'Player 1 should use WAD to move', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, 340, 'Player 2 should use the mouse to put traps on screen', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, 400, 'Press -> To Play!', menuConfig).setOrigin(0.5);

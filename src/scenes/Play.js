@@ -251,7 +251,7 @@ class Play extends Phaser.Scene {
         //this.movingContainer.add([platform0]);
         
         // DEBUG PLATFORM
-        this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
+        // this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
 
         // player 1 keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
