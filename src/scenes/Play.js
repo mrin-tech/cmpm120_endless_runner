@@ -625,6 +625,7 @@ class Play extends Phaser.Scene {
     fallActivate(sprite, enemy) {
         if (enemy.hit != true) {
             enemy.hit = true;
+            this.sound.play('explode');
             //this.touchFlag = true;
             this.runner.hurt();
             this.cameras.main.shake(100);
@@ -656,6 +657,7 @@ class Play extends Phaser.Scene {
     fallActivate2(sprite, enemy) {
         if (enemy.hit != true) {
             enemy.hit = true;
+            this.sound.play('explode');
             
             this.cameras.main.shake(50);
             enemy.body.allowGravity = false;
