@@ -7,10 +7,12 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         this.moveSpeed = 8;
         this.jumps = 0;
         this.Jumping = false;
+        this.Jumping2 = false;
         this.Running = false;
         this.idleLooping = false;
         this.runLooping = false;
         this.jumpLooping = false;
+        this.jumpLooping2 = false;
         this.dead = false;
         this.hearts = 3;
     }
@@ -31,7 +33,8 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
     update() {        
         // add player core mechanics
         this.onGround = this.body.touching.down;        //checks if player is standing on solid ground
-        console.log("PLAYER LOCATION X: "+this.x);
+        console.log("Jumping2: "+this.Jumping2);
+        console.log("Jumping: "+this.Jumping);
 
         // console.log('onGround' + this.onGround);
         // console.log(this.Running);
@@ -44,7 +47,13 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
         if (!this.dead) {
             if (this.onGround == true) {
                 this.Jumping = false;
+                this.Jumping2 = false;
                 this.jumpLooping = false;
+                this.jumpLooping2 = false;
+            }
+
+            if (this.jumps > 1) {
+                this.Jumping2 = true;
             }
 
             // checking when to play idle anim
@@ -60,12 +69,22 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
                 // console.log('run');
                 this.runLooping = true;
             }
-            //checking when to play jumping anim
+            //checking when to play jumping1 anim
             if (this.Jumping == true && this.jumpLooping == false) {
                 this.play({ key: 'jump' });
                 this.idleLooping = false;
                 this.runLooping = false;
                 this.jumpLooping = true;
+            }
+
+            //checking when to play jumping2 anim
+            if (this.Jumping2 == true && this.jumpLooping2 == false) {
+                console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+                this.play({ key: 'jump2' });
+                this.idleLooping = false;
+                this.runLooping = false;
+                this.jumpLooping = false;
+                this.jumpLooping2 = true;
             }
 
             //changing look direction
@@ -114,6 +133,10 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
                 this.setVelocityY(-900);        // the jump
                 this.jumps += 1;
                 this.Jumping = true;
+                if (this.jumps > 1) {
+                    this.Jumping = false;
+                    this.Jumping2 = true;
+                }
             }
         } else {
             if (this.dyingAnim = false) {

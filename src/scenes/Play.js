@@ -33,7 +33,11 @@ class Play extends Phaser.Scene {
         this.load.image('block3', './assets/Level-Design/Platform-Block (3).png');
         this.load.image('block4', './assets/Level-Design/Platform-Block (4).png');
         this.load.image('inventory', './assets/Traps/Inventory.png');
-        this.load.spritesheet('jumping', 'assets/Player-Sprites/Player1-Jump2(R)-Sheet.png', {
+        this.load.spritesheet('jumping', 'assets/Player-Sprites/Player1-Jump(R)-Sheet.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('jumping2', 'assets/Player-Sprites/Player1-Jump2(R)-Sheet.png', {
             frameWidth: 32,
             frameHeight: 32
         });
@@ -190,7 +194,17 @@ class Play extends Phaser.Scene {
         const runnerJump = this.anims.create({
             key: 'jump',
             frames: this.anims.generateFrameNames('jumping', {
-                start: 1,
+                start: 5,
+                end: 12
+            }),
+            frameRate: 12,
+            //repeat: -1
+        });
+
+        const runnerJump2 = this.anims.create({
+            key: 'jump2',
+            frames: this.anims.generateFrameNames('jumping2', {
+                start: 3,
                 end: 7
             }),
             frameRate: 12,
@@ -337,7 +351,7 @@ class Play extends Phaser.Scene {
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.enemyGroup.runChildUpdate = true;
         // this.physics.add.collider(this.runner, this.enemyGroup);
-        let generateEnemy = this.time.addEvent({ delay: 200, callback: () =>{
+        let generateEnemy = this.time.addEvent({ delay: 400, callback: () =>{
             this.enemyGenerate();
         },  loop: true });
 
