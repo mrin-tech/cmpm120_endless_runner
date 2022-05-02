@@ -11,7 +11,7 @@ class Play extends Phaser.Scene {
         this.load.image('clouds', './assets/clouds.png');
         this.load.image('cursor', './assets/cursor.png');
         this.load.image('heart', './assets/heart.png');
-        this.load.image('zeplin', './assets/zeplin.png');
+        this.load.image('zeplin', './assets/Zeplin.png');
         this.load.spritesheet('bearTrap', 'assets/Traps/Bear-Trap-Set-Sheet.png', {
             frameWidth: 16,
             frameHeight: 16
