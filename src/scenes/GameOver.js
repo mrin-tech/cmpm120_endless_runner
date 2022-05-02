@@ -28,7 +28,7 @@ class GameOver extends Phaser.Scene {
         // this menu text is temporary for now
         this.add.text(game.config.width/2, 260, 'Game Over', gameOverConfig).setOrigin(0.5);
         gameOverConfig.fontSize = '30px';
-        this.add.text(game.config.width/2, 320, 'press <- to restart press -> to menu', gameOverConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, 320, 'Press <- to Restart or Press -> to Menu', gameOverConfig).setOrigin(0.5);
 
         this.add.text(game.config.width/2, 380, 'HighScore: ' + globalHighScore, gameOverConfig).setOrigin(0.5);
         
