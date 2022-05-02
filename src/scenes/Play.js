@@ -633,13 +633,15 @@ class Play extends Phaser.Scene {
                 // x: this.newCannon.x + 100,
                 // y: this.newCannon.y,
                 lifespan: 1400,
-                speedY: { min: -200, max: -800 },
                 speed: { min: 100, max: 300 },
                 quantity: 30,
                 scale: { start: 4, end: 0, ease: 'Power3' },
                 blendMode: 'ADD',
                 follow: enemy
             });
+            let explodeStop = this.time.addEvent({ delay: 200, callback: () =>{
+                this.stopExplode();
+            }});
             let explode3 = this.time.addEvent({ delay: 3000, callback: () =>{
                 this.deleteParticlesFall();
             }});
@@ -719,6 +721,10 @@ class Play extends Phaser.Scene {
     deleteParticlesFall() {
         this.expParticles2.destroy();
         this.newEnemy.destroy();
+    }
+
+    stopExplode() {
+        this.partEm2.on = false;
     }
 
 
