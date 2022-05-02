@@ -29,6 +29,8 @@ class GameOver extends Phaser.Scene {
         this.add.text(game.config.width/2, 260, 'Game Over', gameOverConfig).setOrigin(0.5);
         gameOverConfig.fontSize = '30px';
         this.add.text(game.config.width/2, 320, 'press <- to restart press -> to menu', gameOverConfig).setOrigin(0.5);
+
+        this.add.text(game.config.width/2, 380, 'HighScore: ' + globalHighScore, gameOverConfig).setOrigin(0.5);
         
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);

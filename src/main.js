@@ -25,5 +25,5 @@ let borderUISize = 40;
 let borderPadding = borderUISize / 3;
 let platformGroup;
 let enemyGroup;
-let highScore=0;
+let globalHighScore = 0;
 let touchFlag = false;
