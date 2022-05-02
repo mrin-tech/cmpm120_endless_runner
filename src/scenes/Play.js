@@ -437,7 +437,7 @@ class Play extends Phaser.Scene {
         }
         // delete platforms that move out of frame
         this.platformGroup.getChildren().forEach(function(platform){
-            if(platform.x + (platform.width*2) < 0) {
+            if(platform.x + (platform.width*2) < -100) {
                 this.platformGroup.killAndHide(platform);
                 this.platformGroup.remove(platform);
             }
