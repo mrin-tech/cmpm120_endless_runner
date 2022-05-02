@@ -342,6 +342,7 @@ class Play extends Phaser.Scene {
 
         //this.physics.add.collider(this.runner, this.enemyGroup).active = false;
         this.physics.add.overlap(this.runner, this.enemyGroup, this.fallActivate, null, this);
+        this.physics.add.overlap(this.platformGroup, this.enemyGroup, this.fallActivate2, null, this);
         // this.physics.add.collider(this.runner, this.enemyGroup).active = false;
 
 
@@ -643,6 +644,37 @@ class Play extends Phaser.Scene {
                 this.stopExplode();
             }});
             let explode3 = this.time.addEvent({ delay: 3000, callback: () =>{
+                this.deleteParticlesFall();
+            }});
+        }
+    }
+
+    fallActivate2(sprite, enemy) {
+        if (enemy.hit != true) {
+            enemy.hit = true;
+            
+            this.cameras.main.shake(50);
+            enemy.body.allowGravity = false;
+            enemy.body.setVelocity(0, 0);
+            enemy.alpha = 0;
+
+            this.expParticles2 = this.add.particles('smoke');
+            this.partEm2 = this.expParticles2.createEmitter({
+                angle: {min: -45, max: -135},
+                // x: this.newCannon.x + 100,
+                // y: this.newCannon.y,
+                lifespan: 1400,
+                speed: { min: 100, max: 700 },
+                quantity: 30,
+                scale: { start: 4, end: 0, ease: 'Power3' },
+                blendMode: 'ADD',
+                follow: enemy,
+                followOffset: new Phaser.Math.Vector2(0, 50)
+            });
+            let explodeStop = this.time.addEvent({ delay: 200, callback: () =>{
+                this.stopExplode();
+            }});
+            let explode3 = this.time.addEvent({ delay: 1000, callback: () =>{
                 this.deleteParticlesFall();
             }});
         }
