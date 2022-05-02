@@ -27,3 +27,4 @@ let platformGroup;
 let enemyGroup;
 let globalHighScore = 0;
 let touchFlag = false;
+game.paused = false;

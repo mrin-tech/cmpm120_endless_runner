@@ -27,17 +27,25 @@ class Paused extends Phaser.Scene {
         
         // this menu text is temporary for now
         menuConfig.fontSize = '50px';
-        this.add.text(game.config.width/2, 180, 'PAUSED', menuConfig).setOrigin(0.5);
+        this.pausedText = this.add.text(game.config.width/2, 180, 'PAUSED', menuConfig).setOrigin(0.5);
+        this.pausedText.alpha = 0;
         
 
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     update() {
-
+        console.log('ispaused: ' + game.paused);
         if (Phaser.Input.Keyboard.JustDown(keyESC)) {
-          this.scene.resume('playScene');
-          this.scene.stop();   
+            if (game.paused == false) {
+                game.paused = true;
+                this.pausedText.alpha = 0.9;
+                this.scene.pause('playScene');
+            } else {
+                game.paused = false;
+                this.pausedText.alpha = 0;
+                this.scene.resume('playScene');
+            }
         }
     }
 }

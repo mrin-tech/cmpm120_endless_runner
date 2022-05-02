@@ -108,8 +108,8 @@ class Play extends Phaser.Scene {
             },
         }
         menuConfig.fontSize = '50px';
-        this.pauseText = this.add.text(game.config.width/2, 180, 'PAUSED', menuConfig).setOrigin(0.5);
-        this.pauseText.alpha = 0;
+        // this.pauseText = this.add.text(game.config.width/2, 180, 'PAUSED', menuConfig).setOrigin(0.5);
+        // this.pauseText.alpha = 0;
 
         // this.highScoreText = this.add.text(80, 80, this.highScore, menuConfig).setOrigin(0.5);
         // this.newHighScoreText = this.add.text(80, 160, 'HighScore: ', menuConfig).setOrigin(0.5);
@@ -363,6 +363,8 @@ class Play extends Phaser.Scene {
         this.heartImg3 = this.add.image(800, 40, 'heart').setScale(1.5);
         
         // this.displayHearts(this.runner.hearts);
+        // Launch Pause Scene
+        this.scene.launch('pauseScene');
     }
 
     update() {
@@ -398,12 +400,15 @@ class Play extends Phaser.Scene {
             
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyESC)) {
-            this.pauseText.alpha = 0.8;
-            this.scene.pause();
-            this.scene.launch('pauseScene');
-            this.pauseText.alpha = 0;
-        }
+        // if (Phaser.Input.Keyboard.JustDown(keyESC)) {
+        //     game.paused = true;
+        //     console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAA'+game.paused)
+        //     this.pauseText.alpha = 0.8;
+        //     this.scene.pause();
+        //     this.scene.launch('pauseScene');
+        //     this.pauseText.alpha = 0;
+        //     game.paused = false;
+        // }
 
         // see where traps will be
         if (this.selectedTrap == true) {
