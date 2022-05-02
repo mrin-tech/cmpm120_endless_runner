@@ -40,9 +40,11 @@ class Play extends Phaser.Scene {
         this.load.image('enemy_img', './assets/Traps/cigar_bomb.png');
 
         this.load.atlas('flares', './assets/flares.png', './assets/flares.json');
+        this.load.image('smoke', './assets/Traps/smoke_particle.png');
     }
 
     create() {
+        this.highScore=0;
         // hiding mouse
         let canvas = this.sys.canvas;
         canvas.style.cursor = 'none';
@@ -90,10 +92,30 @@ class Play extends Phaser.Scene {
         this.inv2Highlight.lineWidth = 2;
         this.inv2Highlight.strokeColor = 0xFDFF9C;
 
+        // pause menu text configuration
+        let menuConfig = {
+            fontFamily: 'INVASION2000',
+            fontSize: '20px',
+            backgroundColor: '#637a68',
+            color: '#dddace',
+            align: 'center',
+            padding: {
+                top: 5,
+                bottom: 5,
+                right: 5,
+                left: 5
+            },
+        }
+        menuConfig.fontSize = '50px';
+        this.pauseText = this.add.text(game.config.width/2, 180, 'PAUSED', menuConfig).setOrigin(0.5);
+        this.pauseText.alpha = 0;
 
+        // this.highScoreText = this.add.text(80, 80, this.highScore, menuConfig).setOrigin(0.5);
+        // this.newHighScoreText = this.add.text(80, 160, 'HighScore: ', menuConfig).setOrigin(0.5);
 
         this.selectedTrap = true;
         this.selectedOther = false;
+
         
         
         //score
@@ -111,9 +133,15 @@ class Play extends Phaser.Scene {
                  top: 5,
                  bottom: 5,
              },
-             fixedWidth: 170
+             fixedWidth: 200
          }
-         this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+         
+        this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+        // this.localHighScore = this.highScore;
+        this.highScoreText = this.add.text(100, 80, globalHighScore, scoreConfig).setOrigin(0.5);
+        scoreConfig.fontSize = '20px';
+        this.newHighScoreText = this.add.text(100, 50, 'HighScore: ', scoreConfig).setOrigin(0.5);
+
 
         // Initialize Cooldowns
         this.bearTrapMax = 250;
@@ -127,13 +155,15 @@ class Play extends Phaser.Scene {
             delay: 75,
             callback: ()=>{
                 if (this.p1Score < 999999) {
-                     this.p1Score = Number(this.p1Score) + Number(1)
+                    this.p1Score = Number(this.p1Score) + Number(1)
+                    // if (this.p1Score > this.highScore) this.highScore = this.p1Score;
                     this.score.text = this.p1Score
                 }
             },
             loop: true
         })
 
+        
         //ANIMATIONS
         const runnerIdle = this.anims.create({
             key: 'idle',
@@ -198,7 +228,7 @@ class Play extends Phaser.Scene {
                 start: 1,
                 end: 3
             }),
-            frameRate: 12,
+            frameRate: 14,
         });
 
 
@@ -216,13 +246,15 @@ class Play extends Phaser.Scene {
         this.platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
         //this.movingContainer.add([platform0]);
         
-        // this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
+        // DEBUG PLATFORM
+        //  this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
 
         // player 1 keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         // MOUSE CONTROLS
             // Trap selection
@@ -296,22 +328,6 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.runner, this.cannonGroup, this.cannonActivate, null, this);
 
 
-        // var particles = this.add.particles('flares');
-
-        // particles.createEmitter({
-        //     frame: 'yellow',
-        //     radial: false,
-        //     lifespan: 2000,
-        //     speedX: { min: 200, max: 400 },
-        //     quantity: 4,
-        //     gravityY: -50,
-        //     scale: { start: 0.6, end: 0, ease: 'Power3' },
-        //     blendMode: 'ADD',
-            
-        //     // follow: this.cannonGroup
-        // });
-
-
         // generate enemy that is not part of the inventory
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.enemyGroup.runChildUpdate = true;
@@ -352,9 +368,18 @@ class Play extends Phaser.Scene {
         this.cursor.setDepth(0.5);
         // console.log(this.cursor.depth);
 
-        if (this.runner.dead == true) {
+        if (this.runner.dead == true || this.runner.y > 800) {
             this.gameOver = true;
+            globalHighScore = this.highScore;
             this.scene.start('gameOverScene');
+            
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.pauseText.alpha = 0.8;
+            this.scene.pause();
+            this.scene.launch('pauseScene');
+            this.pauseText.alpha = 0;
         }
 
         // see where traps will be
@@ -418,13 +443,8 @@ class Play extends Phaser.Scene {
 
 
         if (this.touchFlag==true) {
-            console.log('touch flag is true');
             this.DelayDeath();
-            
             this.touchFlag = false;
-        }
-        else {
-            console.log('touch flag is false');
         }
 
 
@@ -437,23 +457,23 @@ class Play extends Phaser.Scene {
         }, this);
         
 
-
         this.platform0.x -= 7;
 
         this.enemyGroup.getChildren().forEach(function(enemy) {
             this.allowGravity = true;
-          }, this);
+        }, this);
 
         // Moving Backgrounds
         this.sky.tilePositionX += 0.05;
         this.clouds.tilePositionX += 0.5;
         this.zeplin.tilePositionX += 1;
 
-        if (this.runner.y > 800) {
-            console.log('abc');
-            this.gameOver = true;
-            this.scene.start('gameOverScene'); 
-        }
+        // if (this.runner.y > 800) {
+        //     console.log('abc');
+        //     this.gameOver = true;
+        //     this.scene.start('gameOverScene'); 
+        //     console.log('falling p1score', this.p1Score);
+        // }
 
 
         console.log(this.selectedTrap);
@@ -477,6 +497,16 @@ class Play extends Phaser.Scene {
 
         if (this.gameOver == false) {
             this.runner.update();
+            if (this.p1Score >= globalHighScore) {
+                this.highScore = this.p1Score;
+                this.highScoreText.text = this.highScore;
+                this.newHighScoreText.text = 'New High Score!';
+                console.log(this.highScore, this.p1Score, globalHighScore);
+            }
+            if (globalHighScore > this.p1Score) {
+                this.highScore = globalHighScore;
+                this.highScoreText.text = globalHighScore;
+            }
             //this.trapp.update();
         }
     }
@@ -552,18 +582,18 @@ class Play extends Phaser.Scene {
         this.newCannon = new CannonBall(this, 1200, pointery, 'cannonBall', 0).setScale(2.5);
         this.cannonGroup.add(this.newCannon);
 
-        var particles = this.add.particles('flares');
+        this.particles = this.add.particles('smoke');
 
-        particles.createEmitter({
-            frame: 'yellow',
+        this.partTrail = this.particles.createEmitter({
+            // frame: 'yellow',
             radial: false,
             // x: this.newCannon.x + 100,
             // y: this.newCannon.y,
             lifespan: 2000,
-            speedX: { min: 200, max: 400 },
+            speedX: { min: -200, max: -400 },
             quantity: 4,
             gravityY: -50,
-            scale: { start: 0.3, end: 0, ease: 'Power3' },
+            scale: { start: 3, end: 0, ease: 'Power3' },
             blendMode: 'ADD',
             
             follow: this.newCannon,
@@ -597,6 +627,28 @@ class Play extends Phaser.Scene {
             cannon.animated = true;
             this.runner.hurt();
             this.cameras.main.shake(100);
+
+            this.expParticles = this.add.particles('smoke');
+            this.partEm = this.expParticles.createEmitter({
+                // frame: 'yellow',
+                radial: true,
+                // x: this.newCannon.x + 100,
+                // y: this.newCannon.y,
+                lifespan: 1200,
+                speed: { min: 100, max: 600 },
+                quantity: 30,
+                gravityY: 10,
+                scale: { start: 4, end: 0, ease: 'Power3' },
+                blendMode: 'ADD',
+                
+                follow: this.newCannon
+            });
+            let explode1 = this.time.addEvent({ delay: 200, callback: () =>{
+                this.deleteCannon();
+            }});
+            let explode2 = this.time.addEvent({ delay: 3000, callback: () =>{
+                this.deleteParticles();
+            }});
         }
     }
 
@@ -609,4 +661,21 @@ class Play extends Phaser.Scene {
             
         },  loop: true });
     }
+
+    deleteCannon() {
+        this.newCannon.alpha = 0;
+        this.partTrail.on = false;
+        this.partEm.on = false;
+    }
+
+    deleteParticles() {
+        this.particles.destroy();
+        this.expParticles.destroy();
+        this.newCannon.delete();
+    }
+
+    deleteTrailParticles() {
+        this.particles.destroy();
+    }
+
 }

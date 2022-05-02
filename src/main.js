@@ -9,7 +9,7 @@ let config = {
             debug: true
         }
     },
-    scene: [Menu, Play, GameOver]
+    scene: [Menu, Play, GameOver, Paused]
 }
 
 
@@ -19,11 +19,11 @@ game.settings = {
 };
 
 // reserving keyboard variables
-let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT, keyLEFT;
+let keyW, keyA, keyS, keyD, keySPACE, keyRIGHT, keyLEFT, keyESC;
 
 let borderUISize = 40;
 let borderPadding = borderUISize / 3;
 let platformGroup;
 let enemyGroup;
-let highScore=0;
+let globalHighScore = 0;
 let touchFlag = false;
