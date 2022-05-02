@@ -488,6 +488,9 @@ class Play extends Phaser.Scene {
                 enemy.fall();
                 console.log('FALLING ENEMY');
             }
+            if(enemy.hit == true) {
+                enemy.body.setVelocity(0,0);
+            }
         }, this);
         
 
@@ -580,8 +583,8 @@ class Play extends Phaser.Scene {
         // this.physics.add.collider(this.runner, this.newEnemy);
         this.enemyGroup.add(this.newEnemy);
         this.enemyCounter += Phaser.Math.Between(900,2000);
-
     }
+
 
     spawnTrap(pointerx, pointery) {
         this.newTrap = new Trap(this, pointerx, pointery, 'bearTrap', 0).setScale(2.5);
@@ -613,11 +616,34 @@ class Play extends Phaser.Scene {
         });
     }
 
+    // Explode Bomb on contact
     fallActivate(sprite, enemy) {
-        this.touchFlag = true;
-        enemy.fall();
+        if (enemy.hit != true) {
+            enemy.hit = true;
+            //this.touchFlag = true;
+            this.runner.hurt();
+            this.cameras.main.shake(100);
+            enemy.body.allowGravity = false;
+            enemy.body.setVelocity(0, 0);
+            enemy.alpha = 0;
 
-        
+            this.expParticles2 = this.add.particles('smoke');
+            this.partEm2 = this.expParticles2.createEmitter({
+                radial: true,
+                // x: this.newCannon.x + 100,
+                // y: this.newCannon.y,
+                lifespan: 1400,
+                speedY: { min: -200, max: -800 },
+                speed: { min: 100, max: 300 },
+                quantity: 30,
+                scale: { start: 4, end: 0, ease: 'Power3' },
+                blendMode: 'ADD',
+                follow: enemy
+            });
+            let explode3 = this.time.addEvent({ delay: 3000, callback: () =>{
+                this.deleteParticlesFall();
+            }});
+        }
     }
 
     trapActivate(sprite, trap)  {
@@ -688,6 +714,11 @@ class Play extends Phaser.Scene {
 
     deleteTrailParticles() {
         this.particles.destroy();
+    }
+
+    deleteParticlesFall() {
+        this.expParticles2.destroy();
+        this.newEnemy.destroy();
     }
 
 
