@@ -136,12 +136,13 @@ class Play extends Phaser.Scene {
              },
              fixedWidth: 200
          }
-         
-        this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+        
+        this.scoreText = this.add.text(game.config.width/2 - 80, 0, 'Score:', scoreConfig);
+        this.score = this.add.text(game.config.width/2 + 100, 0, this.p1Score, scoreConfig);
         // this.localHighScore = this.highScore;
-        this.highScoreText = this.add.text(100, 80, globalHighScore, scoreConfig).setOrigin(0.5);
+        this.highScoreText = this.add.text(120, 40, globalHighScore, scoreConfig).setOrigin(0.5);
         scoreConfig.fontSize = '20px';
-        this.newHighScoreText = this.add.text(100, 50, 'HighScore: ', scoreConfig).setOrigin(0.5);
+        this.newHighScoreText = this.add.text(120, 20, 'HighScore: ', scoreConfig).setOrigin(0.5);
 
 
         // Initialize Cooldowns
@@ -359,9 +360,9 @@ class Play extends Phaser.Scene {
         this.cannonPre.alpha = 0;
         this.bearTrapPre.tint = 0xF7FF00;
 
-        this.heartImg1 = this.add.image(1000, 40, 'heart').setScale(1.5);
-        this.heartImg2 = this.add.image(900, 40, 'heart').setScale(1.5);
-        this.heartImg3 = this.add.image(800, 40, 'heart').setScale(1.5);
+        this.heartImg1 = this.add.image(1050, 40, 'heart').setScale(1.5);
+        this.heartImg2 = this.add.image(1000, 40, 'heart').setScale(1.5);
+        this.heartImg3 = this.add.image(950, 40, 'heart').setScale(1.5);
         
         // this.displayHearts(this.runner.hearts);
         // Launch Pause Scene
@@ -382,6 +383,9 @@ class Play extends Phaser.Scene {
 
         // this.displayHearts(this.runner.hearts);
 
+        this.heartImg1.setDepth(0.5);
+        this.heartImg2.setDepth(0.5);
+        this.heartImg3.setDepth(0.5);
         this.inventory.setDepth(0.5);
         this.invTrap.setDepth(0.5);
         this.invBomb.setDepth(0.5);
