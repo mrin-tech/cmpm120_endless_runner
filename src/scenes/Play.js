@@ -410,6 +410,7 @@ class Play extends Phaser.Scene {
         //     game.paused = false;
         // }
 
+
         // see where traps will be
         if (this.selectedTrap == true) {
             this.bearTrapPre.alpha = 0.5;
@@ -478,9 +479,14 @@ class Play extends Phaser.Scene {
 
         // delete enemies that move out of frame
         this.enemyGroup.getChildren().forEach(function(enemy){
-            if(enemy.y > 600) {
+            if(enemy.y > 600 || enemy.x < -100) {
                 this.enemyGroup.killAndHide(enemy);
                 this.enemyGroup.remove(enemy);
+                console.log('KILLED ENEMY -----------------------------------------');
+            }
+            if(enemy.x > this.runner.x - 100 && enemy.x < this.runner.x + 100) {
+                enemy.fall();
+                console.log('FALLING ENEMY');
             }
         }, this);
         
@@ -496,32 +502,8 @@ class Play extends Phaser.Scene {
         this.clouds.tilePositionX += 0.5;
         this.zeplin.tilePositionX += 1;
 
-        // if (this.runner.y > 800) {
-        //     console.log('abc');
-        //     this.gameOver = true;
-        //     this.scene.start('gameOverScene'); 
-        //     console.log('falling p1score', this.p1Score);
-        // }
-
 
         console.log(this.selectedTrap);
-        // console.log(game.settings.worldSpeed);
-        // console.log('Number of platforms: ' + this.plats);
-
-        // console.log('runner x position: ' + this.runner.x);
-
-        //moving the world around player
-        // if(keyA.isDown || keyD.isDown) {
-        //     if(keyA.isDown && this.runner.x) {
-        //         this.movingContainer.x += game.settings.worldSpeed;
-        //         console.log('left');
-        //     }
-        //     if (keyD.isDown && this.runner.x) {
-        //         this.movingContainer.x -= game.settings.worldSpeed;
-        //         console.log('right');
-        //     }
-        // }
-        
 
         if (this.gameOver == false) {
             this.runner.update();
@@ -593,7 +575,7 @@ class Play extends Phaser.Scene {
         this.absVal = this.newEnemy.x-game.settings.worldSpeed - this.enemyCounter;
         this.newEnemy.absPos = this.absVal;
         this.newEnemy.allowGravity = true;
-        this.newEnemy.setSize(16, 500);
+        this.newEnemy.setSize(16, 40);
 
         // this.physics.add.collider(this.runner, this.newEnemy);
         this.enemyGroup.add(this.newEnemy);

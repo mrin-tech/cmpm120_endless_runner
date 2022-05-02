@@ -31,6 +31,7 @@ class Player1 extends Phaser.Physics.Arcade.Sprite {
     update() {        
         // add player core mechanics
         this.onGround = this.body.touching.down;        //checks if player is standing on solid ground
+        console.log("PLAYER LOCATION X: "+this.x);
 
         // console.log('onGround' + this.onGround);
         // console.log(this.Running);
