@@ -44,6 +44,7 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        this.highScore=0;
         // hiding mouse
         let canvas = this.sys.canvas;
         canvas.style.cursor = 'none';
@@ -109,6 +110,8 @@ class Play extends Phaser.Scene {
         this.pauseText = this.add.text(game.config.width/2, 180, 'PAUSED', menuConfig).setOrigin(0.5);
         this.pauseText.alpha = 0;
 
+        // this.highScoreText = this.add.text(80, 80, this.highScore, menuConfig).setOrigin(0.5);
+        // this.newHighScoreText = this.add.text(80, 160, 'HighScore: ', menuConfig).setOrigin(0.5);
 
         this.selectedTrap = true;
         this.selectedOther = false;
@@ -130,9 +133,15 @@ class Play extends Phaser.Scene {
                  top: 5,
                  bottom: 5,
              },
-             fixedWidth: 170
+             fixedWidth: 200
          }
-         this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+         
+        this.score = this.add.text(borderUISize + borderPadding*30, borderUISize + borderPadding*0.1, this.p1Score, scoreConfig);
+        // this.localHighScore = this.highScore;
+        this.highScoreText = this.add.text(100, 80, globalHighScore, scoreConfig).setOrigin(0.5);
+        scoreConfig.fontSize = '20px';
+        this.newHighScoreText = this.add.text(100, 50, 'HighScore: ', scoreConfig).setOrigin(0.5);
+
 
         // Initialize Cooldowns
         this.bearTrapMax = 250;
@@ -146,13 +155,15 @@ class Play extends Phaser.Scene {
             delay: 75,
             callback: ()=>{
                 if (this.p1Score < 999999) {
-                     this.p1Score = Number(this.p1Score) + Number(1)
+                    this.p1Score = Number(this.p1Score) + Number(1)
+                    // if (this.p1Score > this.highScore) this.highScore = this.p1Score;
                     this.score.text = this.p1Score
                 }
             },
             loop: true
         })
 
+        
         //ANIMATIONS
         const runnerIdle = this.anims.create({
             key: 'idle',
@@ -235,7 +246,8 @@ class Play extends Phaser.Scene {
         this.platform0 = this.platforms.create(400, 600, 'platform0').setScale(6).refreshBody();
         //this.movingContainer.add([platform0]);
         
-         this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
+        // DEBUG PLATFORM
+        //  this.platform0 = this.platforms.create(600, 600, 'platform0').setScale(6).refreshBody();
 
         // player 1 keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -316,22 +328,6 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.runner, this.cannonGroup, this.cannonActivate, null, this);
 
 
-        // var particles = this.add.particles('flares');
-
-        // particles.createEmitter({
-        //     frame: 'yellow',
-        //     radial: false,
-        //     lifespan: 2000,
-        //     speedX: { min: 200, max: 400 },
-        //     quantity: 4,
-        //     gravityY: -50,
-        //     scale: { start: 0.6, end: 0, ease: 'Power3' },
-        //     blendMode: 'ADD',
-            
-        //     // follow: this.cannonGroup
-        // });
-
-
         // generate enemy that is not part of the inventory
         this.enemyGroup = this.physics.add.group( {allowGravity: false, immovable: true } );
         this.enemyGroup.runChildUpdate = true;
@@ -372,9 +368,11 @@ class Play extends Phaser.Scene {
         this.cursor.setDepth(0.5);
         // console.log(this.cursor.depth);
 
-        if (this.runner.dead == true) {
+        if (this.runner.dead == true || this.runner.y > 800) {
             this.gameOver = true;
+            globalHighScore = this.highScore;
             this.scene.start('gameOverScene');
+            
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyESC)) {
@@ -445,13 +443,8 @@ class Play extends Phaser.Scene {
 
 
         if (this.touchFlag==true) {
-            console.log('touch flag is true');
             this.DelayDeath();
-            
             this.touchFlag = false;
-        }
-        else {
-            console.log('touch flag is false');
         }
 
 
@@ -475,11 +468,12 @@ class Play extends Phaser.Scene {
         this.clouds.tilePositionX += 0.5;
         this.zeplin.tilePositionX += 1;
 
-        if (this.runner.y > 800) {
-            console.log('abc');
-            this.gameOver = true;
-            this.scene.start('gameOverScene'); 
-        }
+        // if (this.runner.y > 800) {
+        //     console.log('abc');
+        //     this.gameOver = true;
+        //     this.scene.start('gameOverScene'); 
+        //     console.log('falling p1score', this.p1Score);
+        // }
 
 
         console.log(this.selectedTrap);
@@ -503,6 +497,16 @@ class Play extends Phaser.Scene {
 
         if (this.gameOver == false) {
             this.runner.update();
+            if (this.p1Score >= globalHighScore) {
+                this.highScore = this.p1Score;
+                this.highScoreText.text = this.highScore;
+                this.newHighScoreText.text = 'New High Score!';
+                console.log(this.highScore, this.p1Score, globalHighScore);
+            }
+            if (globalHighScore > this.p1Score) {
+                this.highScore = globalHighScore;
+                this.highScoreText.text = globalHighScore;
+            }
             //this.trapp.update();
         }
     }
@@ -673,4 +677,5 @@ class Play extends Phaser.Scene {
     deleteTrailParticles() {
         this.particles.destroy();
     }
+
 }
